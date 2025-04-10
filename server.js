@@ -1,23 +1,30 @@
-require ('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const userRoutes = require('./routes/userRoutes');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const PORT = process.env.PORT || 3000;
+
+const casoRoutes = require('./routes/cases.routes.js');
+const authRoutes = require('./routes/auth.routes.js');
+
+
 
 const app = express();
-app.use(express.json()); 
-app.use(cors());
+const PORT = process.env.PORT || 3000;
 
 app.use('/users', userRoutes);
 
+
+// Conexão com MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Banco Conectado!'))
+  .then(() => {
+    console.log('Banco de dados conectado');
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  })
   .catch(err => {
     console.error('Erro de conexão:', err.message);
-    
   });
-
-app.listen(3000)
