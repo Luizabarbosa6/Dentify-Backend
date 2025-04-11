@@ -1,9 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middlewares/upload');
-const Caso = require('../models/cases.js');
+const caseController = require('../controllers/casesController');
 
-router.post('/', upload.single('evidencia'), async (req, res) => {
+router.post('/', caseController.createCase);
+router.patch('/:id/status', caseController.updateStatus);
+router.get('/', caseController.listCases);
+router.get('/:id', caseController.getCaseDetail);
+
+module.exports = router;
+
+
+
+
+
+/*.post('/', upload.single('evidencia'), async (req, res) => {
   try {
     const {
       idCaso,
@@ -28,17 +38,8 @@ router.post('/', upload.single('evidencia'), async (req, res) => {
       Local,
       tipoPericia,
       orgaoSolicitante,
-      periciado: {
-        Nome: nome,
-        dataNascimento,
-        Sexo: sexo,
-        documentoIdentificacao: docPericiado
-      },
-      evidencias: {
-        descricaoCaso,
-        evidencias: req.file?.filename || evidenciasInfo,
-        documentoIdentificacao: docEvidencias
-      }
+      periciado: { Nome: nome, dataNascimento, Sexo: sexo, documentoIdentificacao: docPericiado },
+      evidencias: { descricaoCaso, evidencias: req.file?.filename || evidenciasInfo, documentoIdentificacao: docEvidencias}
     });
 
     await novoCaso.save();
@@ -46,6 +47,4 @@ router.post('/', upload.single('evidencia'), async (req, res) => {
   } catch (err) {
     res.status(500).json({ msg: 'Erro ao salvar o caso', erro: err.message });
   }
-});
-
-module.exports = router;
+});*/
