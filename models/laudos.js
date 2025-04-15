@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const laudoSchema = new mongoose.Schema({
   titulo: String,
   texto: String,
-  evidence: { type: mongoose.Schema.Types.ObjectId, ref: 'evidence' },
+  caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Caso' },
   peritoResponsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
