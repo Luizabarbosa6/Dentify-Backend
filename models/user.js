@@ -3,10 +3,15 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    cpf: { type: String, required: true, unique: true,  match: /^\d{11}$/ },
-    email: { type: String, required: true, unique: true, lowercase: true, match: /^\S+@\S+\.\S+$/ },
-    password: { type: String, required: true },
+  name: { type: String, required: true },
+  cpf: { type: String, required: true, unique: true, match: /^\d{11}$/ },
+  email: { type: String, required: true, unique: true, lowercase: true, match: /^\S+@\S+\.\S+$/ },
+  password: { type: String, required: true },
+  role: { 
+    type: String, 
+    enum: ['admin', 'perito', 'assistente'], 
+    default: 'assistente' 
+  }
 });
 
 // Criptografa a senha antes de salvar

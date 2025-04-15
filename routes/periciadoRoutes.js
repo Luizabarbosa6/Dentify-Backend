@@ -5,5 +5,7 @@ const controller = require('../controllers/periciadoController');
 router.post('/', controller.createPericiado);
 router.get('/', controller.getPericiado);
 router.get('/:id', controller.getPericiadoById);
+router.put('/:id', controller.updatePericiado); 
+router.delete('/:id', controller.deletePericiado); 
 
 module.exports = router;

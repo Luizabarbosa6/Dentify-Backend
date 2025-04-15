@@ -28,3 +28,39 @@ exports.listarLaudos = async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar laudos' });
   }
 };
+
+exports.updateLaudo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dadosAtualizados = req.body;
+
+    const laudoAtualizado = await Laudo.findByIdAndUpdate(id, dadosAtualizados, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!laudoAtualizado) {
+      return res.status(404).json({ message: 'Laudo não encontrado' });
+    }
+
+    res.json(laudoAtualizado);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar laudo', erro: error.message });
+  }
+};
+
+exports.deleteLaudo = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const laudoDeletado = await Laudo.findByIdAndDelete(id);
+
+    if (!laudoDeletado) {
+      return res.status(404).json({ message: 'Laudo não encontrado' });
+    }
+
+    res.json({ message: 'Laudo deletado com sucesso' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao deletar laudo', erro: error.message });
+  }
+};

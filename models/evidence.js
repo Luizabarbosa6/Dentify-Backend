@@ -5,8 +5,8 @@ const evidenceSchema = new mongoose.Schema({
   dataColeta: Date,
   coletadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
-  imagemURL: String,     // Se tipo for imagem
-  conteudoTexto: String, // Se tipo for texto
+  imagemURL: String,  
+  conteudoTexto: String, 
 });
 
 module.exports = mongoose.model('Evidence', evidenceSchema);
