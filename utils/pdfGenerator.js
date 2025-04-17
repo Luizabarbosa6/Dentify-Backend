@@ -44,6 +44,7 @@ exports.gerarPDF = (laudo) => {
      .text(`${laudo.peritoResponsavel?.nome || 'Nome do Perito'}`, { align: 'left' })
      .text('Perito Odonto-Legal', { align: 'left' });
 
+
   doc.end();
 
   return new Promise((resolve) => {

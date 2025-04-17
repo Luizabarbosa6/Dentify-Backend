@@ -12,5 +12,3 @@ const casoSchema = new mongoose.Schema({
 
 
 module.exports = mongoose.model('Caso', casoSchema)
-
-

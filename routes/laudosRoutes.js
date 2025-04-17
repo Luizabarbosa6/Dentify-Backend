@@ -11,3 +11,4 @@ router.get('/:id/pdf', authGuard, laudosController.exportToPDF);
 router.get('/', authGuard, laudosController.listarLaudos);
 
 module.exports = router;
+
