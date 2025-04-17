@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const authGuard = require('../middlewares/authGuard');
+const roleGuard = require('../middlewares/roleGuard');
+
 const { createUser, getUsers, login, updateUser, deleteUser, getUserById } = require('../controllers/userControllers');
 
-// Rotas de usuários
-router.post('/', createUser);
-router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.post('/login', login);
-router.put('/:id', updateUser); // Rota para atualizar usuário
-router.delete('/:id', deleteUser); // Rota para deletar usuário
 
+router.post('/login', login);
+router.post('/', authGuard, roleGuard('admin'), createUser);
+router.get('/', authGuard, roleGuard('admin', 'perito'), getUsers);
+router.get('/:id', authGuard, getUserById);
+router.put('/:id', authGuard, updateUser); 
+router.delete('/:id', authGuard, roleGuard('admin'), deleteUser);
+
+  
 module.exports = router;
