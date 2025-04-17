@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
+const upload = require('../utils/upload');
 const evidenceController = require('../controllers/evidenceController');
+const authGuard = require('../middlewares/authGuard');
+const roleGuard = require('../middlewares/roleGuard');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-});
-const upload = multer({ storage });
-
-router.post('/', upload.single('imagem'), evidenceController.uploadEvidence);
-router.get('/by-case/:caseId', evidenceController.getEvidenceByCase);
+router.post('/', authGuard, roleGuard('assistente'), upload.single('imagem'), evidenceController.uploadEvidence);
+router.put('/:id', authGuard, roleGuard('assistente'), upload.single('imagem'), evidenceController.updateEvidence);
+router.delete('/:id', authGuard, roleGuard('assistente'), evidenceController.deleteEvidence);
+router.get('/by-case/:caseId', authGuard, evidenceController.getEvidenceByCase);
 
 module.exports = router;
