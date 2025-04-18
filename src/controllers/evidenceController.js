@@ -10,10 +10,10 @@ exports.uploadEvidence = async (req, res) => {
 
   const evid = new Evidence({ tipo, dataColeta, coletadoPor, caso, conteudoTexto, imagemURL});
 
+
   await evid.save();
   res.status(201).json(evid);
 };
-
 
 exports.getEvidenceByCase = async (req, res) => {
   const evidencias = await Evidence.find({ caso: req.params.caseId });
@@ -75,3 +75,4 @@ exports.deleteEvidence = async (req, res) => {
     res.status(500).json({ message: 'Erro ao deletar evidência', error: error.message });
   }
 };
+

@@ -12,3 +12,4 @@ router.get('/', authGuard, controller.listCases);
 router.get('/:id', authGuard, controller.getCaseDetail);
 
 module.exports = router;
+
