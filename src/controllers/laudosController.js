@@ -22,7 +22,7 @@ exports.exportToPDF = async (req, res) => {
 
 exports.listarLaudos = async (req, res) => {
   try {
-    const laudos = await Laudo.find().populate('caso').populate('peritoResponsavel');
+    const laudos = await Laudo.find().populate('evidence').populate('peritoResponsavel');
     res.json(laudos);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar laudos' });
