@@ -1,10 +1,12 @@
 require('dotenv').config();
 const express = require('express');
-const userRoutes = require('./routes/userRoutes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./documents/swagger');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const userRoutes = require('./routes/userRoutes');
 const periciadoRoutes = require('./routes/periciadoRoutes');
 const caseRoutes = require('./routes/casesRoutes');
 const evidenceRoutes = require('./routes/evidenceRoutes');
@@ -23,6 +25,7 @@ app.use('/api/cases', caseRoutes);
 app.use('/api/evidences', evidenceRoutes);
 app.use('/api/laudos', laudosRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // Conexão com MongoDB

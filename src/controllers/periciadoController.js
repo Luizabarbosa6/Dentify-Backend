@@ -10,9 +10,17 @@ exports.createPericiado = async (req, res) => {
 };
 
 exports.getPericiado = async (req, res) => {
-  const pessoas = await Periciado.find();
-  res.json(pessoas);
+  try {
+    const pessoas = await Periciado.find();
+    if (pessoas.length === 0) {
+      return res.status(404).json({ message: 'Nenhum periciado encontrado' });
+    }
+    res.status(200).json(pessoas);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar periciados', erro: error.message });
+  }
 };
+
 
 exports.getPericiadoById = async (req, res) => {
   const pessoa = await Periciado.findById(req.params.id);
@@ -24,16 +32,13 @@ exports.updatePericiado = async (req, res) => {
   try {
     const { id } = req.params;
     const dadosAtualizados = req.body;
-
     const pessoaAtualizada = await Periciado.findByIdAndUpdate(id, dadosAtualizados, {
       new: true, // Retorna o documento atualizado
       runValidators: true // Valida com base no schema
     });
-
     if (!pessoaAtualizada) {
       return res.status(404).json({ error: 'Periciado não encontrado' });
     }
-
     res.json(pessoaAtualizada);
   } catch (err) {
     res.status(400).json({ error: 'Erro ao atualizar periciado', detalhes: err });
@@ -43,13 +48,10 @@ exports.updatePericiado = async (req, res) => {
 exports.deletePericiado = async (req, res) => {
   try {
     const { id } = req.params;
-
     const pessoaDeletada = await Periciado.findByIdAndDelete(id);
-
     if (!pessoaDeletada) {
       return res.status(404).json({ error: 'Periciado não encontrado' });
     }
-
     res.json({ mensagem: 'Periciado deletado com sucesso' });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao deletar periciado', detalhes: err });
