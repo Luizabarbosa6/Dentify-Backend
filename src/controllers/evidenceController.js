@@ -10,7 +10,6 @@ exports.uploadEvidence = async (req, res) => {
 
   const evid = new Evidence({ tipo, dataColeta, coletadoPor, caso, conteudoTexto, imagemURL});
 
-
   await evid.save();
   res.status(201).json(evid);
 };
