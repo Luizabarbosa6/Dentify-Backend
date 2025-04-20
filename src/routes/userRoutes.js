@@ -25,30 +25,7 @@ const { createUser, getUsers, login, updateUser, deleteUser, getUserById } = req
  *           schema:
  *             type: object
  *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login realizado com sucesso
- */
-
-
-/**
- * @swagger
- * /api/users/login:
- *   post:
- *     summary: Realiza login e retorna token JWT
- *     tags: [Usuários]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
+ *               cpf:
  *                 type: string
  *               password:
  *                 type: string

@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/periciados', periciadoRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/evidences', evidenceRoutes);
