@@ -6,7 +6,8 @@ const casoSchema = new mongoose.Schema({
     status: { type: String, enum: ['Em andamento', 'Finalizado', 'Arquivado'] },
     dataAbertura: Date,
     dataFechamento: Date,
-    responsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    sexo: { type: String, enum: ['Masculino', 'Feminino', 'Outro'], required: true },
+    local: String,
   });
 
 
