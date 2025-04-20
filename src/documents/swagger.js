@@ -5,12 +5,12 @@ const swaggerDefinition = {
   info: {
     title: 'API de Perícia Odontológica',
     version: '1.0.0',
-    description: 'Documentação da API do sistema de gestão de perícia odontológica',
+    description: 'Documentação da API de gestão de perícia odontológica',
   },
   servers: [
     {
-      url: 'http://localhost:3000',
-      description: 'Servidor local',
+      url: 'https://dentify-backend-dct4.onrender.com/',
+      description: 'Servidor do render',
     },
   ],
   components: {

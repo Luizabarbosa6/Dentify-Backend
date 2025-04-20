@@ -7,7 +7,6 @@ const casoSchema = new mongoose.Schema({
     dataAbertura: Date,
     dataFechamento: Date,
     responsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    evidencias: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evidence' }],
   });
 
 

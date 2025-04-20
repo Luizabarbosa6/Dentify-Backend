@@ -79,7 +79,7 @@ router.post('/', authGuard, roleGuard('admin'), createUser);
  *       200:
  *         description: Lista de usuários
  */
-router.get('/', authGuard, roleGuard('admin', 'perito'), getUsers);
+router.get('/', authGuard, roleGuard('admin'), getUsers);
 
 /**
  * @swagger

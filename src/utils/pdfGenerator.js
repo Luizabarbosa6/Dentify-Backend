@@ -18,8 +18,8 @@ exports.gerarPDF = (laudo) => {
 
   // Dados do laudo
   doc.font('Times-Roman').fontSize(11)
-     .text(`Registrado em: ${new Date(laudo.createdAt).toLocaleDateString()}`)
-     .text(`LAUDO Nº ${laudo._id}`);
+  .text(`Registrado em: ${new Date(laudo.createdAt).toLocaleDateString()}`.toUpperCase())
+  .text(`Laudo nº ${laudo._id}`.toUpperCase());
 
   doc.moveDown();
 
