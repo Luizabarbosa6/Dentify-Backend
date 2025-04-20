@@ -67,6 +67,10 @@ router.post('/', authGuard, roleGuard('perito'), laudosController.createLaudo);
  *                 type: string
  *               texto:
  *                 type: string
+ *               evidence:
+ *                 type: string
+ *             peritoResponsavel:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Laudo atualizado com sucesso
