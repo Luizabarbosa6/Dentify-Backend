@@ -11,6 +11,7 @@ const periciadoRoutes = require('./routes/periciadoRoutes');
 const caseRoutes = require('./routes/casesRoutes');
 const evidenceRoutes = require('./routes/evidenceRoutes');
 const laudosRoutes = require('./routes/laudosRoutes');
+const relatoriosRouts = require ('./routes/relatoriosRouts');
 const path = require('path');
 
 
@@ -24,6 +25,7 @@ app.use('/api/periciados', periciadoRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/evidences', evidenceRoutes);
 app.use('/api/laudos', laudosRoutes);
+app.use('/api/relatorio', relatoriosRouts);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
