@@ -89,27 +89,6 @@ router.patch('/:id/status', authGuard, roleGuard('perito'), controller.updateSta
  *         required: true
  *         schema:
  *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *               descricao:
- *                 type: string
- *               status:
- *                 type: string
- *                 enum: [Em andamento, Finalizado, Arquivado]
- *               dataAbertura:
- *                 type: string
- *                 format: date
- *               responsavel:
- *                 type: string
- *                 description: ID do usuário responsável
- *             type: object
  *     responses:
  *       200:
  *         description: Caso atualizado com sucesso
