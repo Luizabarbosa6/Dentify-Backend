@@ -48,7 +48,7 @@ const roleGuard = require('../middlewares/roleGuard');
  *       201:
  *         description: Evidência criada com sucesso
  */
-router.post('/', authGuard, roleGuard('assistente'), upload.single('imagem'), evidenceController.uploadEvidence);
+router.post('/', authGuard, roleGuard('perito','assistente'), upload.single('imagem'), evidenceController.uploadEvidence);
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.post('/', authGuard, roleGuard('assistente'), upload.single('imagem'), ev
  *       200:
  *         description: Evidência atualizada com sucesso
  */
-router.put('/:id', authGuard, roleGuard('assistente'), upload.single('imagem'), evidenceController.updateEvidence);
+router.put('/:id', authGuard, roleGuard('perito','assistente'), upload.single('imagem'), evidenceController.updateEvidence);
 
 /**
  * @swagger
@@ -110,7 +110,7 @@ router.put('/:id', authGuard, roleGuard('assistente'), upload.single('imagem'), 
  *       200:
  *         description: Evidência deletada com sucesso
  */
-router.delete('/:id', authGuard, roleGuard('assistente'), evidenceController.deleteEvidence);
+router.delete('/:id', authGuard, roleGuard('perito','assistente'), evidenceController.deleteEvidence);
 
 /**
  * @swagger
