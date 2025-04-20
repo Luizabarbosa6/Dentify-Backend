@@ -36,9 +36,11 @@ const roleGuard = require('../middlewares/roleGuard');
  *               dataAbertura:
  *                 type: string
  *                 format: date
- *               responsavel:
+ *               sexo:
  *                 type: string
- *                 description: ID do usuário responsável
+ *                 enum: [Masculino, Feminino, Outro]
+ *               local:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Caso criado com sucesso
@@ -107,9 +109,11 @@ router.patch('/:id/status', authGuard, roleGuard('perito'), controller.updateSta
  *               dataAbertura:
  *                 type: string
  *                 format: date
- *               responsavel:
+ *               sexo:
  *                 type: string
- *                 description: ID do usuário responsável
+ *                 enum: [Masculino, Feminino, Outro]
+ *               local:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Caso atualizado com sucesso
