@@ -27,7 +27,7 @@ exports.updateStatus = async (req, res) => {
 exports.listCases = async (req, res) => {
   try {
     const filtros = req.query;
-    const casos = await Case.find(filtros).populate('responsavel evidencias');
+    const casos = await Case.find(filtros).populate('responsavel');
     if (casos.length === 0) {
       return res.status(404).json({ message: 'Nenhum caso encontrado' });
     }
@@ -39,7 +39,7 @@ exports.listCases = async (req, res) => {
 
 exports.getCaseDetail = async (req, res) => {
   try {
-    const caso = await Case.findById(req.params.id).populate('responsavel evidencias');
+    const caso = await Case.findById(req.params.id).populate('responsavel');
     if (!caso) {
       return res.status(404).json({ message: 'Caso não encontrado' });
     }
@@ -48,7 +48,6 @@ exports.getCaseDetail = async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar detalhes do caso', erro: error.message });
   }
 };
-
 
 exports.updateCase = async (req, res) => {
   try {
