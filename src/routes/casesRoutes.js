@@ -75,7 +75,7 @@ router.post('/', authGuard, roleGuard('perito'), controller.createCase);
  */
 router.patch('/:id/status', authGuard, roleGuard('perito'), controller.updateStatus);
 
-/**
+ /**
  * @swagger
  * /cases/{id}:
  *   put:
@@ -89,6 +89,27 @@ router.patch('/:id/status', authGuard, roleGuard('perito'), controller.updateSta
  *         required: true
  *         schema:
  *           type: string
+ *         description: ID do caso a ser atualizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *               descricao:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [Aberto, Em andamento, Finalizado, Arquivado]
+ *               dataAbertura:
+ *                 type: string
+ *                 format: date
+ *               responsavel:
+ *                 type: string
+ *                 description: ID do usuário responsável
  *     responses:
  *       200:
  *         description: Caso atualizado com sucesso
