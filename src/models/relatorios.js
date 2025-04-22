@@ -5,6 +5,7 @@ const relatorioSchema = new mongoose.Schema({
   conteudo: { type: String, required: true },
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Caso', required: true },
   peritoResponsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  isSigned: { type: Boolean, default: false },
   dataCriacao: { type: Date, default: Date.now }
 });
 
