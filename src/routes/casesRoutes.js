@@ -30,6 +30,8 @@ const roleGuard = require('../middlewares/roleGuard');
  *                 type: string
  *               descricao:
  *                 type: string
+ *               responsavel:
+ *                 type: string
  *               status:
  *                 type: string
  *                 enum: [Em andamento, Finalizado, Arquivado]
