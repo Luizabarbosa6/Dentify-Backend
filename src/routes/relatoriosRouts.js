@@ -13,10 +13,10 @@ const roleGuard = require('../middlewares/roleGuard');
 
 /**
  * @swagger
- * /api/relatorios:
+ * /api/relatorio:
  *   post:
- *     summary: Criar um novo relatório
- *     tags: [Relatórios]
+ *     summary: Cria um novo relatorio
+ *     tags: [Relatorios]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -24,7 +24,18 @@ const roleGuard = require('../middlewares/roleGuard');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/RelatorioInput'
+ *             type: object
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *               conteudo:
+ *                 type: string
+ *               caso:
+ *                 type: string
+ *                 description: ID do caso
+ *               peritoResponsavel:
+ *                 type: string
+ *                 description: ID do perito responsável
  *     responses:
  *       201:
  *         description: Relatório criado com sucesso
@@ -33,11 +44,12 @@ const roleGuard = require('../middlewares/roleGuard');
  *             schema:
  *               $ref: '#/components/schemas/Relatorio'
  */
+
 router.post('/', authGuard, roleGuard('perito'), controller.createRelatorio); 
 
 /**
  * @swagger
- * /api/relatorios:
+ * /api/relatorio:
  *   get:
  *     summary: Listar todos os relatórios
  *     tags: [Relatórios]
@@ -57,7 +69,7 @@ router.get('/', authGuard, roleGuard('perito'), controller.listarRelatorios);
 
 /**
  * @swagger
- * /api/relatorios/{id}:
+ * /api/relatorio/{id}:
  *   put:
  *     summary: Atualizar um relatório existente
  *     tags: [Relatórios]
@@ -83,7 +95,7 @@ router.put('/:id',authGuard, roleGuard('perito'), controller.updateRelatorio);
 
 /**
  * @swagger
- * /api/relatorios/{id}:
+ * /api/relatorio/{id}:
  *   delete:
  *     summary: Deletar um relatório
  *     tags: [Relatórios]
@@ -103,7 +115,7 @@ router.delete('/:id',authGuard, roleGuard('perito'), controller.deleteRelatorio)
 
 /**
  * @swagger
- * /api/relatorios/{id}/pdf:
+ * /api/relatorio/{id}/pdf:
  *   get:
  *     summary: Exportar o relatório em PDF
  *     tags: [Relatórios]
@@ -128,7 +140,7 @@ router.get('/:id/pdf', authGuard, roleGuard('perito'), controller.exportToPDF);
 
 /**
  * @swagger
- * /api/relatorios/{id}/assinar:
+ * /api/relatorio/{id}/assinar:
  *   post:
  *     summary: Assinar digitalmente o relatório
  *     tags: [Relatórios]

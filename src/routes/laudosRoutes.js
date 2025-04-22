@@ -156,6 +156,21 @@ router.get('/', authGuard, laudosController.listarLaudos);
  *     responses:
  *       200:
  *         description: Laudo assinado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 assinatura:
+ *                   type: string
+ *       400:
+ *         description: O laudo já está assinado ou falta informação
+ *       404:
+ *         description: Laudo não encontrado
+ *       500:
+ *         description: Erro interno do servidor
  */
 router.post('/:id/assinar', authGuard, roleGuard('perito'), laudosController.assinarLaudo);
 
