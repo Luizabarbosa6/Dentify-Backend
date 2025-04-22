@@ -1,4 +1,5 @@
 const Relatorio = require('../models/relatorios');
+const { signPDFFile } = require('../utils/pdfSigner');
 const { gerarPDF } = require('../utils/pdfRelatorioGenerator');
 
 exports.createRelatorio = async (req, res) => {
@@ -11,20 +12,57 @@ exports.createRelatorio = async (req, res) => {
   }
 };
 
-exports.exportToPDF = async (req, res) => {
+exports.assinarRelatorio = async (req, res) => {
   try {
-    const relatorio = await Relatorio.findById(req.params.id).populate('peritoResponsavel').populate('caso');
+    const relatorio = await Relatorio.findById(req.params.id);
+
     if (!relatorio) {
       return res.status(404).json({ message: 'Relatório não encontrado' });
     }
 
+    if (relatorio.isSigned) {
+      return res.status(400).json({ message: 'O relatório já está assinado' });
+    }
+
+    relatorio.isSigned = true;
+    await relatorio.save();
+
+    res.status(200).json({ message: 'Relatório assinado com sucesso', assinatura });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao assinar o relatório', error: error.message });
+  }
+};
+
+exports.exportToPDF = async (req, res) => {
+  try {
+    // Buscando o relatório e populando o perito responsável
+    const relatorio = await Relatorio.findById(req.params.id).populate('peritoResponsavel', 'name');
+
+    if (!relatorio) {
+      return res.status(404).json({ message: 'Relatório não encontrado' });
+    }
+
+    // Verificando se o relatório foi assinado
+    if (!relatorio.isSigned) {
+      return res.status(400).json({ message: 'O relatório precisa ser assinado antes de ser exportado' });
+    }
+
+    // Verificando se o perito está corretamente preenchido
+    if (!relatorio.peritoResponsavel || !relatorio.peritoResponsavel.name) {
+      return res.status(400).json({ message: 'Perito responsável não encontrado' });
+    }
+
+    // Gerando o PDF com os dados do relatório
     const pdfBuffer = await gerarPDF(relatorio);
 
+    // Configurando os headers para exportar o PDF
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="relatorio-${relatorio._id}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="relatorio-assinado-${relatorio._id}.pdf"`);
     res.send(pdfBuffer);
+
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao exportar PDF', erro: error.message });
+    console.error('Erro ao exportar PDF:', error);
+    res.status(500).json({ message: 'Erro ao exportar o relatório', error: error.message });
   }
 };
 

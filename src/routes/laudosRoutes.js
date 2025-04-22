@@ -121,7 +121,7 @@ router.delete('/:id', authGuard, roleGuard('perito'), laudosController.deleteLau
  *               format: binary
  */
 
-router.get('/:id/pdf', authGuard, laudosController.exportToPDF);
+router.get('/:id/pdf', authGuard, roleGuard('perito'), laudosController.exportToPDF);
 
 /**
  * @swagger
@@ -136,6 +136,29 @@ router.get('/:id/pdf', authGuard, laudosController.exportToPDF);
  *         description: Lista de laudos retornada com sucesso
  */
 router.get('/', authGuard, laudosController.listarLaudos);
+
+
+/**
+ * @swagger
+ * /api/laudos/{id}/assinar:
+ *   post:
+ *     summary: Assinar digitalmente o laudo
+ *     tags: [Laudos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID do laudo a ser assinado
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Laudo assinado com sucesso
+ */
+router.post('/:id/assinar', authGuard, roleGuard('perito'), laudosController.assinarLaudo);
+
 
 module.exports = router;
 

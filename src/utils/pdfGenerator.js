@@ -38,18 +38,29 @@ exports.gerarPDF = (laudo) => {
 
   doc.moveDown(3);
 
-  // Rodapé com assinatura
+ 
   doc.font('Times-Roman')
      .text('________________________________________', { align: 'left' })
-     .text(`${laudo.peritoResponsavel?.nome || 'Nome do Perito'}`, { align: 'left' })
+     .text(`${laudo.peritoResponsavel?.name || 'Nome do Perito'}`, { align: 'left' })
      .text('Perito Odonto-Legal', { align: 'left' });
-
+  doc.moveDown(2);
+  doc.font('Times-Italic')
+     .fontSize(10)
+     .fillColor('gray')
+     .text(`Este documento foi assinado digitalmente por ${laudo.peritoResponsavel?.name} em ${new Date().toLocaleString()}`, {
+        align: 'left'
+     });
 
   doc.end();
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     doc.on('end', () => {
-      resolve(Buffer.concat(buffers));
+      const buffer = Buffer.concat(buffers);
+      resolve(buffer);
+    });
+
+    doc.on('error', (err) => {
+      reject(err);
     });
   });
 };

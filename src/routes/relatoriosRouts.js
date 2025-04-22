@@ -4,10 +4,156 @@ const controller = require('../controllers/relatoriosController');
 const authGuard = require('../middlewares/authGuard');
 const roleGuard = require('../middlewares/roleGuard');
 
-router.post('/', authGuard, roleGuard('perito'), controller.createRelatorio);  
+/**
+ * @swagger
+ * tags:
+ *   name: Relatórios
+ *   description: Endpoints para gerenciamento de relatórios
+ */
+
+/**
+ * @swagger
+ * /api/relatorios:
+ *   post:
+ *     summary: Criar um novo relatório
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RelatorioInput'
+ *     responses:
+ *       201:
+ *         description: Relatório criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relatorio'
+ */
+router.post('/', authGuard, roleGuard('perito'), controller.createRelatorio); 
+
+/**
+ * @swagger
+ * /api/relatorios:
+ *   get:
+ *     summary: Listar todos os relatórios
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de relatórios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Relatorio'
+ */
 router.get('/', authGuard, roleGuard('perito'), controller.listarRelatorios);
+
+/**
+ * @swagger
+ * /api/relatorios/{id}:
+ *   put:
+ *     summary: Atualizar um relatório existente
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RelatorioInput'
+ *     responses:
+ *       200:
+ *         description: Relatório atualizado com sucesso
+ */
 router.put('/:id',authGuard, roleGuard('perito'), controller.updateRelatorio);
+
+/**
+ * @swagger
+ * /api/relatorios/{id}:
+ *   delete:
+ *     summary: Deletar um relatório
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Relatório deletado com sucesso
+ */
 router.delete('/:id',authGuard, roleGuard('perito'), controller.deleteRelatorio);
-router.get('/:id/exportar-pdf', authGuard, roleGuard('perito'), controller.exportToPDF);
+
+/**
+ * @swagger
+ * /api/relatorios/{id}/pdf:
+ *   get:
+ *     summary: Exportar o relatório em PDF
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: PDF gerado com sucesso
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.get('/:id/pdf', authGuard, roleGuard('perito'), controller.exportToPDF);
+
+/**
+ * @swagger
+ * /api/relatorios/{id}/assinar:
+ *   post:
+ *     summary: Assinar digitalmente o relatório
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Relatório assinado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 assinatura:
+ *                   type: string
+ */
+router.post('/:id/assinar', authGuard, roleGuard('perito'), controller.assinarRelatorio);
+
 
 module.exports = router;

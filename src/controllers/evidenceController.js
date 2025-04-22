@@ -15,9 +15,19 @@ exports.uploadEvidence = async (req, res) => {
 };
 
 exports.getEvidenceByCase = async (req, res) => {
-  const evidencias = await Evidence.find({ caso: req.params.caseId });
-  res.json(evidencias);
+  try {
+    // Buscando evidências e populando o campo coletadoPor (referência para o usuário)
+    const evidencias = await Evidence.find({ caso: req.params.caseId })
+      .populate('coletadoPor', 'name');  // Isso vai retornar o campo 'name' do usuário
+
+    // Verifique o que está sendo retornado
+    res.json(evidencias);
+  } catch (error) {
+    console.error('Erro ao obter evidências:', error);
+    res.status(500).json({ error: 'Erro ao obter evidências.' });
+  }
 };
+
 
 const multer = require('multer');
 const storage = multer.diskStorage({

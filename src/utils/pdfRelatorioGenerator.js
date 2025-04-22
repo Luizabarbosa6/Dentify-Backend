@@ -29,40 +29,37 @@ exports.gerarPDF = (relatorio) => {
 
   doc.moveDown();
 
-  // Informações do Caso relacionado
-  const caso = relatorio.caso; // já populado
-  if (caso) {
-    doc.fontSize(12).font('Times-Roman')
-      .text(`Caso nº: ${caso._id}`)
-      .text(`Título do Caso: ${caso.titulo}`)
-      .text(`Local: ${caso.local}`)
-      .text(`Sexo: ${caso.sexo}`)
-      .text(`Data de Abertura: ${new Date(caso.dataAbertura).toLocaleDateString()}`)
-      .text(`Status: ${caso.status}`);
-
-    doc.moveDown();
-  }
-
   // Corpo do texto do relatório
   doc.fontSize(12).font('Times-Roman')
-    .text(relatorio.texto, {
-      align: 'justify',
-      lineGap: 4
-    });
+     .text(relatorio.conteudo, {
+        align: 'justify',
+        lineGap: 4
+     });
 
   doc.moveDown(3);
 
-  // Rodapé com assinatura
   doc.font('Times-Roman')
     .text('________________________________________', { align: 'left' })
-    .text(`${relatorio.peritoResponsavel?.nome || 'Nome do Perito'}`, { align: 'left' })
+    .text(`${relatorio.peritoResponsavel?.name || 'Nome do Perito'}`, { align: 'left' })
     .text('Perito Odonto-Legal', { align: 'left' });
-
+    doc.moveDown(2);
+    doc.font('Times-Italic')
+       .fontSize(10)
+       .fillColor('gray')
+       .text(`Este documento foi assinado digitalmente por ${relatorio.peritoResponsavel?.name || 'Nome do Perito'} em ${new Date().toLocaleString()}`, {
+         align: 'left'
+       });
+    
   doc.end();
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     doc.on('end', () => {
-      resolve(Buffer.concat(buffers));
+      const buffer = Buffer.concat(buffers);
+      resolve(buffer);
+    });
+
+    doc.on('error', (err) => {
+      reject(err);
     });
   });
 };
