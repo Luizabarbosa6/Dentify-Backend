@@ -16,7 +16,7 @@ const roleGuard = require('../middlewares/roleGuard');
  * /api/relatorio:
  *   post:
  *     summary: Cria um novo relatorio
- *     tags: [Relatorios]
+ *     tags: [Relatórios]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
