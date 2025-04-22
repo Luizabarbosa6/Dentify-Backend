@@ -3,6 +3,7 @@ const { default: mongoose } = require("mongoose");
 const casoSchema = new mongoose.Schema({
     titulo: String,
     descricao: String,
+    responsavel: { type: String, required: true },
     status: { type: String, enum: ['Em andamento', 'Finalizado', 'Arquivado'] },
     data: Date,
     dataFechamento: Date,
