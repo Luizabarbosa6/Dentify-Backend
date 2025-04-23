@@ -1,73 +1,118 @@
-# Dentify - Backend API 🦷🚀
+🦷 Dentify - API Backend para Gestão de Laudos Odonto-Legais 🚀
+Dentify é uma poderosa API REST para gerenciamento de casos periciais odontológicos, com suporte a múltiplos perfis de usuários, evidências, laudos digitais, relatórios e geração de dashboards com dados dinâmicos. Ideal para profissionais de odontologia legal, peritos, assistentes e gestores da área forense.
 
-**Dentify** é uma API para um sistema de **perícia odontológica**, permitindo o cadastro e gerenciamento de **casos de perícia**, além de realizar **autenticação e controle de permissões**. O sistema é ideal para profissionais de odontologia legal que precisam gerenciar casos, evidências, laudos e usuários com diferentes níveis de acesso.
+🔗 API pública: https://dentify-backend-dct4.onrender.com
 
-## Funcionalidades ⚙️
+⚙️ Funcionalidades Principais
+✅ Autenticação e Autorização via JWT
+✅ Perfis de Acesso: Admin, Perito, Assistente
+✅ Gerenciamento de Casos Periciais
+✅ Armazenamento e Upload de Evidências (Cloudinary)
+✅ Geração e Assinatura de PDFs (Laudos e Relatórios)
+✅ Dashboard com indicadores e gráficos
+✅ Documentação via Swagger (OpenAPI)
+✅ Controle de status (Em andamento, Finalizado, Arquivado)
+✅ Buscas por tipo de caso (Vítima, Desaparecido, Outro)
 
-- **Cadastro de Usuários**: Crie, edite e remova usuários com diferentes perfis de acesso (admin, perito, assistente).
-- **Autenticação**: Login seguro utilizando **JWT** (JSON Web Token).
-- **Cadastro de Casos de Perícia**: Adicione e edite casos odontológicos com evidências.
-- **Controle de Permissões**: Diferentes níveis de acesso para usuários (admin, perito, assistente).
-- **Evidências**: Armazenamento de evidências, como imagens e textos, associadas aos casos.
-- **Laudos**: Geração e exportação de laudos baseados nas evidências coletadas.
-- **Download de Casos**: Permite o download dos casos de perícia cadastrados.
+🧱 Estrutura do Projeto
+perl
+Copiar
+Editar
+src/
+├── config/                # Configurações (Cloudinary, etc)
+├── controllers/           # Lógica dos endpoints
+├── documents/             # Swagger / OpenAPI
+├── keys/                  # Chaves públicas e privadas (JWT, assinatura)
+├── middlewares/           # Autenticação e controle de acesso
+├── models/                # Modelos do MongoDB (Mongoose)
+├── routes/                # Definição das rotas da API
+├── utils/                 # Utilitários (geração de PDF, assinatura, upload)
+├── server.js              # Ponto de entrada da aplicação
+📊 Dashboard
+Resumo de Casos por status (Em andamento, Finalizado, Arquivado)
 
-## Tecnologias Utilizadas 🧑‍💻
+Distribuição de Casos por tipo (Vítima, Desaparecido, Outro)
 
-- **Node.js** com **Express** 🚀
-- **MongoDB** (usando **Mongoose** para modelagem de dados) 📚
-- **JWT (JSON Web Token)** para autenticação 🔒
-- **bcryptjs** para segurança na senha 🔑
-- **CORS** para permitir chamadas cross-origin 🌐
+Gráficos para cruzamento de dados (ex: vítimas x desaparecidos)
 
-## Documentação Swagger 📚
+Rota: GET /dashboard/resumo
+Dados já prontos para uso em gráficos no frontend!
 
-A documentação da API está disponível através do Swagger, o que facilita a visualização e interação com os endpoints da API.
+🛠️ Tecnologias Utilizadas
 
-- **Swagger UI**: Acesse a documentação interativa da API em: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (localmente).
-- **Documentação**: A API é descrita utilizando o formato OpenAPI (Swagger 3.0), incluindo detalhes sobre autenticação, parâmetros e respostas de cada endpoint.
+Stack	Tecnologia
+Backend	Node.js + Express
+Banco de Dados	MongoDB com Mongoose
+Segurança	JWT, Bcrypt, Helmet
+Upload	Multer + Cloudinary
+PDF	PDFKit, pdf-lib, node-signpdf
+Documentação	Swagger (swagger-jsdoc + UI)
+📄 Documentação Swagger
+Local: http://localhost:3000/api-docs
 
-## Link da API 🌍
+Render: Adicione /api-docs ao final da URL pública do Render.
 
-A API está hospedada no [Render](https://dentify-backend-dct4.onrender.com){:target="_blank"}. Para testar, basta fazer requisições HTTP para este link.
+🚀 Como Rodar Localmente
+Pré-requisitos
+Node.js v18+
 
-## Como Rodar Localmente 🏠
+MongoDB (local ou Atlas)
 
-### Pré-requisitos
-
-Antes de rodar o projeto, você precisa ter o **Node.js** e o **MongoDB** instalados.
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/dentify-backend.git
-Navegue até a pasta do projeto:
+.env com suas variáveis (como MONGO_URI, CLOUDINARY, etc.)
 
 bash
 Copiar
 Editar
-cd src
-Instale as dependências:
+# Clone o repositório
+git clone https://github.com/seu-usuario/dentify-backend.git
 
-bash
-Copiar
-Editar
+# Acesse o projeto
+cd dentify-backend
+
+# Instale as dependências
 npm install
-Inicie o servidor:
 
-bash
+# Inicie o servidor
+node server.js
+Servidor ativo em: http://localhost:3000
+
+🔐 Variáveis de Ambiente .env (exemplo)
+env
 Copiar
 Editar
-node server.js
-O servidor estará rodando em http://localhost:3000 por padrão.
-
-Executando Testes
-Se você deseja rodar testes, execute:
-
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/dentify
+JWT_SECRET=supertoken123
+CLOUDINARY_CLOUD_NAME=xxx
+CLOUDINARY_API_KEY=xxx
+CLOUDINARY_API_SECRET=xxx
+📦 Dependências do Projeto
+json
+Copiar
+Editar
+"dependencies": {
+  "bcrypt": "^5.1.1",
+  "bcryptjs": "^3.0.2",
+  "cloudinary": "^2.6.0",
+  "cors": "^2.8.5",
+  "dotenv": "^16.4.7",
+  "express": "^5.1.0",
+  "helmet": "^8.1.0",
+  "jsonwebtoken": "^9.0.2",
+  "mongoose": "^8.13.2",
+  "multer": "^1.4.5-lts.2",
+  "multer-storage-cloudinary": "^4.0.0",
+  "node-forge": "^1.3.1",
+  "node-signpdf": "^3.0.0",
+  "pdf-lib": "^1.17.1",
+  "pdfkit": "^0.16.0",
+  "swagger-jsdoc": "^6.2.8",
+  "swagger-ui-express": "^5.0.1"
+}
+🧪 Testes
 bash
 Copiar
 Editar
 npm test
-Isso executará todos os testes definidos no projeto e garantirá que as funcionalidades não quebrem nada ao serem alteradas.
-
-Licença 📜
-Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para mais detalhes.
+📜 Licença
+Este projeto está licenciado sob a Licença MIT – consulte o arquivo LICENSE para mais detalhes.
