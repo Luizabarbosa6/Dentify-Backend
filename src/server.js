@@ -12,6 +12,7 @@ const caseRoutes = require('./routes/casesRoutes');
 const evidenceRoutes = require('./routes/evidenceRoutes');
 const laudosRoutes = require('./routes/laudosRoutes');
 const relatoriosRouts = require ('./routes/relatoriosRouts');
+const dashboardRoutes = require('./routes/dashboardRoutes'); 
 const path = require('path');
 
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/periciados', periciadoRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/evidences', evidenceRoutes);
 app.use('/api/laudos', laudosRoutes);
