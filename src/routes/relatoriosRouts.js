@@ -86,7 +86,6 @@ router.get('/', authGuard, roleGuard('perito'), controller.listarRelatorios);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/RelatorioInput'
  *     responses:
  *       200:
  *         description: Relatório atualizado com sucesso
