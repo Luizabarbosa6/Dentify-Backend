@@ -38,11 +38,7 @@ const roleGuard = require('../middlewares/roleGuard');
  *                 description: ID do perito responsável
  *     responses:
  *       201:
- *         description: Relatório criado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Relatorio'
+ *         description: Relatório criado com sucesso            
  */
 
 router.post('/', authGuard, roleGuard('perito'), controller.createRelatorio); 
