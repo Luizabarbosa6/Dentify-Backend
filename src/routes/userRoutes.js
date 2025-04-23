@@ -49,6 +49,12 @@ router.post('/login', login);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - cpf
+ *               - email
+ *               - password
+ *               - confirmarSenha
  *             properties:
  *               name:
  *                 type: string
@@ -57,6 +63,8 @@ router.post('/login', login);
  *               email:
  *                 type: string
  *               password:
+ *                 type: string
+ *               confirmarSenha:
  *                 type: string
  *               role:
  *                 type: string
@@ -129,6 +137,8 @@ router.get('/:id', authGuard, getUserById);
  *               email:
  *                 type: string
  *               password:
+ *                 type: string
+ *               confirmarSenha:
  *                 type: string
  *               role:
  *                 type: string
