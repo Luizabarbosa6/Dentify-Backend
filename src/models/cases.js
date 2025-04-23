@@ -1,8 +1,9 @@
 const { default: mongoose } = require("mongoose");
 
 const casoSchema = new mongoose.Schema({
-    titulo: String,
-    descricao: String,
+    titulo: { type: String, required: true },
+    descricao: { type: String, required: true },
+    tipo: { type: String, enum: ['Vítima', 'Desaparecido', 'Outro'], required: true },
     responsavel: { type: String, required: true },
     status: { type: String, enum: ['Em andamento', 'Finalizado', 'Arquivado'] },
     data: Date,
