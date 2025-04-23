@@ -63,7 +63,7 @@ src/
 
 ## 📄 Documentação Swagger
 
-- **Local**: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)  
+- **Local**: [https://dentify-backend-dct4.onrender.com](https://dentify-backend-dct4.onrender.com/api-docs)  
 - **Render**: Adicione `/api-docs` ao final da URL pública do Render.
 
 ---
@@ -81,7 +81,7 @@ src/
 git clone https://github.com/seu-usuario/dentify-backend.git
 
 # Acesse o projeto
-cd dentify-backend
+cd src
 
 # Instale as dependências
 npm install

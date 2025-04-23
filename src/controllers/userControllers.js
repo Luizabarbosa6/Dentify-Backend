@@ -7,14 +7,18 @@ const SECRET_KEY = process.env.JWT_SECRET;
 // Criar novo usuário
 exports.createUser = async (req, res) => {
     try {
-        const { name, cpf, email, password, role } = req.body;
+        const { name, cpf, email, password, confirmarSenha, role } = req.body;
+
+        // Verifica se as senhas coincidem
+        if (password !== confirmarSenha) {
+            return res.status(400).json({ message: 'As senhas não coincidem.' });
+        }
 
         let roleToAssign = 'assistente';
-
         if (req.user && req.user.role === 'admin' && role) {
-         roleToAssign = role; 
+            roleToAssign = role;
         }
- 
+
         const existingUser = await User.findOne({ $or: [{ cpf }, { email }] });
         if (existingUser) {
             return res.status(400).json({ message: 'CPF ou e-mail já cadastrado.' });
@@ -28,6 +32,8 @@ exports.createUser = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
+
 
 exports.getUsers = async (req, res) => {
     try {
@@ -84,12 +90,20 @@ exports.login = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, cpf, email, password } = req.body;
+        const { name, cpf, email, password, confirmarSenha, role } = req.body;
 
         const updateData = { name, cpf, email };
 
+        // Permite trocar o cargo somente se o usuário autenticado for admin
+        if (req.user && req.user.role === 'admin' && role) {
+            updateData.role = role;
+        }
+
         if (password) {
-           
+            if (password !== confirmarSenha) {
+                return res.status(400).json({ message: 'As senhas não coincidem.' });
+            }
+
             const salt = await bcrypt.genSalt(10);
             updateData.password = await bcrypt.hash(password, salt);
         }
@@ -103,6 +117,8 @@ exports.updateUser = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
+
 
 exports.deleteUser = async (req, res) => {
     try {
