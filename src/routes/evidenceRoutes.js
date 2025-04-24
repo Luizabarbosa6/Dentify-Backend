@@ -130,6 +130,6 @@ router.delete('/:id', authGuard, roleGuard('perito','assistente'), evidenceContr
  *       200:
  *         description: Lista de evidências retornada com sucesso
  */
-router.get('/by-case/:caseId', authGuard, evidenceController.getEvidenceByCase);
+router.get('/:caseId', authGuard, evidenceController.getEvidenceByCase);
 
 module.exports = router;
