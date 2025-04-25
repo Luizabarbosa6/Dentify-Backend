@@ -74,16 +74,9 @@ exports.login = async (req, res) => {
             { expiresIn: '1d' }
         );
 
-        // Define o token como um cookie seguro
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: isProduction, // deve estar como true em produção
-            sameSite: isProduction ? "None" : "Lax"
-          });
-          
-        // Também pode retornar o token no body se quiser (opcional)
         res.status(200).json({ 
-            message: 'Login bem-sucedido',
+            message: 'Login bem-sucedido', 
+            token,
             user: { 
                 id: user._id, 
                 name: user.name, 
@@ -91,7 +84,6 @@ exports.login = async (req, res) => {
                 role: user.role 
             }
         });
-
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
