@@ -77,8 +77,8 @@ exports.login = async (req, res) => {
         // Define o token como um cookie seguro
         res.cookie("token", token, {
             httpOnly: true,
-            secure: isProduction, // true em produção (HTTPS), false em dev
-            sameSite: isProduction ? "None" : "Lax", // compatível com dev e produção
+            secure: isProduction, // deve estar como true em produção
+            sameSite: isProduction ? "None" : "Lax"
           });
           
         // Também pode retornar o token no body se quiser (opcional)
