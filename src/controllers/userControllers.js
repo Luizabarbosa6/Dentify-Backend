@@ -2,6 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
+const isProduction = process.env.NODE_ENV === 'production';
+
 
 
 // Criar novo usuário
@@ -73,11 +75,11 @@ exports.login = async (req, res) => {
         );
 
         // Define o token como um cookie seguro
-        res.cookie("token", jwt, {
+        res.cookie("token", token, {
             httpOnly: true,
-            secure: isProduction,         // só usa HTTPS em produção
-            sameSite: isProduction ? "None" : "Lax",  // em localhost pode ser 'Lax'
-          }); 
+            secure: isProduction, // true em produção (HTTPS), false em dev
+            sameSite: isProduction ? "None" : "Lax", // compatível com dev e produção
+          });
           
         // Também pode retornar o token no body se quiser (opcional)
         res.status(200).json({ 
