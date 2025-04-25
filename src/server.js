@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
+const cookieParser = require('cookie-parser');
 const swaggerSpec = require('./documents/swagger');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -21,6 +22,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use('/api/users', userRoutes);
 app.use('/api/periciados', periciadoRoutes);
 app.use('/api/dashboard', dashboardRoutes);
