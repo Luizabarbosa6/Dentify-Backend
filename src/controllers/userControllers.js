@@ -73,13 +73,12 @@ exports.login = async (req, res) => {
         );
 
         // Define o token como um cookie seguro
-        res.cookie('token', token, {
+        res.cookie("token", jwt, {
             httpOnly: true,
-            secure: true, // coloque como false se estiver testando localmente sem HTTPS
-            sameSite: 'None',
-            maxAge: 24 * 60 * 60 * 1000 // 1 dia em milissegundos
-        });
-
+            secure: isProduction,         // só usa HTTPS em produção
+            sameSite: isProduction ? "None" : "Lax",  // em localhost pode ser 'Lax'
+          }); 
+          
         // Também pode retornar o token no body se quiser (opcional)
         res.status(200).json({ 
             message: 'Login bem-sucedido',
