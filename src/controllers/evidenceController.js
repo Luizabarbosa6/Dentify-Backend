@@ -1,14 +1,14 @@
 const Evidence = require('../models/evidence');
 
 exports.uploadEvidence = async (req, res) => {
-  const { tipo, dataColeta, coletadoPor, caso, conteudoTexto } = req.body;
+  const { tipo, dataColeta, coletadoPor, caso, conteudoTexto, titulo  } = req.body;
 
   let imagemURL = null;
   if (req.file && req.file.path) {
     imagemURL = req.file.path; 
   }
 
-  const evid = new Evidence({ tipo, dataColeta, coletadoPor, caso, conteudoTexto, imagemURL});
+  const evid = new Evidence({ tipo, dataColeta, coletadoPor, caso, conteudoTexto, titulo, imagemURL});
 
   await evid.save();
   res.status(201).json(evid);
@@ -42,20 +42,14 @@ const upload = multer({ storage: storage });
 
 exports.updateEvidence = async (req, res) => {
   try {
-    const { tipo, dataColeta, coletadoPor, caso, conteudoTexto } = req.body;
+    const { tipo, dataColeta, coletadoPor, caso, conteudoTexto, titulo,} = req.body;
 
     let imagemURL;
     if (req.file && req.file.path) {
       imagemURL = req.file.path;
     }
 
-    const updateData = {
-      tipo,
-      dataColeta,
-      coletadoPor,
-      caso,
-      conteudoTexto
-    };
+    const updateData = { tipo, dataColeta, coletadoPor, caso, conteudoTexto, titulo};
 
     if (imagemURL) {
       updateData.imagemURL = imagemURL;

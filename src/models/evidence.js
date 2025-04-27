@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const evidenceSchema = new mongoose.Schema({
   tipo: { type: String, enum: ['imagem', 'texto'], required: true },
   dataColeta: Date,
-  coletadoPor: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  coletadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
+  titulo: { type: String }, // <-- Aqui! Opcional porque não colocamos "required"
   imagemURL: {
     type: String,
     validate: {

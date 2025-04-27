@@ -18,8 +18,12 @@ exports.gerarPDF = (relatorio) => {
 
   // Dados do relatório
   doc.font('Times-Roman').fontSize(11)
-    .text(`Registrado em: ${new Date(relatorio.createdAt).toLocaleDateString()}`.toUpperCase())
-    .text(`Relatório nº ${relatorio._id}`.toUpperCase());
+  .text(`REGISTRADO EM: ${new Date(relatorio.dataCriacao).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  }).toUpperCase()}`)
+  .text(`Relatório nº ${relatorio._id}`.toUpperCase());
 
   doc.moveDown();
 
