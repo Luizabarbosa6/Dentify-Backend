@@ -25,13 +25,20 @@ exports.assinarRelatorio = async (req, res) => {
     }
 
     relatorio.isSigned = true;
+
+    // opcional, se tiver um campo de assinatura:
+    if (req.body.assinatura) {
+      relatorio.assinatura = req.body.assinatura;
+    }
+
     await relatorio.save();
 
-    res.status(200).json({ message: 'Relatório assinado com sucesso', assinatura });
+    res.status(200).json({ message: 'Relatório assinado com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao assinar o relatório', error: error.message });
   }
 };
+
 
 exports.exportToPDF = async (req, res) => {
   try {
