@@ -4,7 +4,8 @@ const evidenceSchema = new mongoose.Schema({
   tipo: { type: String, enum: ['imagem', 'texto'], required: true },
   titulo: { type: String }, 
   dataColeta: Date,
-  coletadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  coletadoPor: { type: String},
+  responsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
   localColeta: { type: String }, 
   imagemURL: {
