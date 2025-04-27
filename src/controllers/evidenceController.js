@@ -1,17 +1,33 @@
 const Evidence = require('../models/evidence');
 
 exports.uploadEvidence = async (req, res) => {
-  const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo  } = req.body;
+  try {
+    const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo } = req.body;
 
-  let imagemURL = null;
-  if (req.file && req.file.path) {
-    imagemURL = req.file.path; 
+    let imagemURL = null;
+    if (req.file && req.file.path) {
+      imagemURL = req.file.path; 
+    }
+
+    const responsavel = req.user.id; // Pega o ID do usuário logado
+
+    const evid = new Evidence({
+      tipo,
+      dataColeta,
+      coletadoPor, // o nome digitado
+      caso,
+      localColeta,
+      conteudoTexto,
+      titulo,
+      imagemURL,
+      responsavel, // novo campo automático
+    });
+
+    await evid.save();
+    res.status(201).json(evid);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao criar evidência', error: error.message });
   }
-
-  const evid = new Evidence({ tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo, imagemURL});
-
-  await evid.save();
-  res.status(201).json(evid);
 };
 
 exports.getEvidenceByCase = async (req, res) => {
@@ -42,14 +58,25 @@ const upload = multer({ storage: storage });
 
 exports.updateEvidence = async (req, res) => {
   try {
-    const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo,} = req.body;
+    const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo } = req.body;
 
     let imagemURL;
     if (req.file && req.file.path) {
       imagemURL = req.file.path;
     }
 
-    const updateData = { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo};
+    const responsavel = req.user.id; // Atualiza também quem editou, se quiser
+
+    const updateData = {
+      tipo,
+      dataColeta,
+      coletadoPor,
+      caso,
+      localColeta,
+      conteudoTexto,
+      titulo,
+      responsavel,
+    };
 
     if (imagemURL) {
       updateData.imagemURL = imagemURL;
@@ -66,6 +93,7 @@ exports.updateEvidence = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar evidência', error: error.message });
   }
 };
+
 
 exports.deleteEvidence = async (req, res) => {
   try {
