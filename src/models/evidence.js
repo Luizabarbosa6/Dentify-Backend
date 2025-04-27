@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 
 const evidenceSchema = new mongoose.Schema({
   tipo: { type: String, enum: ['imagem', 'texto'], required: true },
+  titulo: { type: String }, 
   dataColeta: Date,
   coletadoPor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
-  titulo: { type: String }, // <-- Aqui! Opcional porque não colocamos "required"
+  localColeta: { type: String }, 
   imagemURL: {
     type: String,
     validate: {
@@ -18,7 +19,7 @@ const evidenceSchema = new mongoose.Schema({
       message: 'O campo imagemURL deve ser uma URL válida, uma imagem ou um caminho de arquivo local.',
     }
   },
-  conteudoTexto: String,
+  conteudoTexto: { type: String },
 });
 
 module.exports = mongoose.model('Evidence', evidenceSchema);
