@@ -2,7 +2,7 @@ const Evidence = require('../models/evidence');
 
 exports.uploadEvidence = async (req, res) => {
   try {
-    const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo } = req.body;
+    const { tipo, dataColeta, coletadoPor, caso, localColeta, descricao, titulo } = req.body;
 
     let imagemURL = null;
     if (req.file && req.file.path) {
@@ -17,7 +17,7 @@ exports.uploadEvidence = async (req, res) => {
       coletadoPor, // o nome digitado
       caso,
       localColeta,
-      conteudoTexto,
+      descricao,
       titulo,
       imagemURL,
       responsavel, // novo campo automático
@@ -58,7 +58,7 @@ const upload = multer({ storage: storage });
 
 exports.updateEvidence = async (req, res) => {
   try {
-    const { tipo, dataColeta, coletadoPor, caso, localColeta, conteudoTexto, titulo } = req.body;
+    const {  tipo, dataColeta, coletadoPor, caso, localColeta, descricao, titulo } = req.body;
 
     let imagemURL;
     if (req.file && req.file.path) {
@@ -70,11 +70,12 @@ exports.updateEvidence = async (req, res) => {
     const updateData = {
       tipo,
       dataColeta,
-      coletadoPor,
+      coletadoPor, // o nome digitado
       caso,
       localColeta,
-      conteudoTexto,
+      descricao,
       titulo,
+      imagemURL,
       responsavel,
     };
 
