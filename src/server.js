@@ -4,6 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const cookieParser = require('cookie-parser');
 const swaggerSpec = require('./documents/swagger');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -17,7 +18,9 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const path = require('path');
 
 
+
 const app = express();
+app.use(helmet());
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
