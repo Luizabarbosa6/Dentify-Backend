@@ -22,7 +22,7 @@ const evidenceSchema = new mongoose.Schema({
       message: 'O campo imagemURL deve ser uma URL válida, uma imagem, um PDF, DOCX, TXT ou um caminho de arquivo local.',
     }
   },
-  conteudoTexto: { type: String },
+  descricao: { type: String },
 });
 
 module.exports = mongoose.model('Evidence', evidenceSchema);
