@@ -1,10 +1,19 @@
 const Relatorio = require('../models/relatorios');
+const Case = require('../models/cases');
 const { signPDFFile } = require('../utils/pdfSigner');
 const { gerarPDF } = require('../utils/pdfRelatorioGenerator');
 
 exports.createRelatorio = async (req, res) => {
   try {
     const novoRelatorio = new Relatorio(req.body);
+   
+    const caso = await Case.findById(req.body.caso);
+    if (!caso) {
+      return res.status(404).json({ message: 'Caso não encontrado' });
+    }
+    caso.status = 'Finalizado';
+    caso.dataFechamento = new Date(); // Atribui a data de fechamento ao caso
+    await caso.save(); // Salva a alteração do status e a data de fechamento
     await novoRelatorio.save();
     res.status(201).json(novoRelatorio);
   } catch (error) {
