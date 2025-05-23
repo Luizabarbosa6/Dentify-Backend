@@ -1,11 +1,15 @@
 const Periciado = require('../models/periciado');
 exports.createPericiado = async (req, res) => {
   try {
-    const novaPessoa = new periciado(req.body);
+    const novaPessoa = new Periciado(req.body);
     await novaPessoa.save();
     res.status(201).json(novaPessoa);
   } catch (err) {
-    res.status(400).json({ error: 'Erro ao cadastrar periciado', detalhes: err });
+    res.status(400).json({ 
+      error: 'Erro ao cadastrar periciado', 
+      detalhes: err.message, 
+      erros: err.errors 
+    });
   }
 };
 
