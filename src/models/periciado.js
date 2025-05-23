@@ -5,6 +5,7 @@ const periciadoSchema = new mongoose.Schema({
   dataNascimento: { type: Date, required: true },
   sexo: { type: String, enum: ['Masculino', 'Feminino', 'Outro'], required: true },
   documentoIdentificacao: { type: String, required: true },
+  etnia: { type: String, enum: ['Preto', 'Pardo', 'Branco','Amarelo','Indígena'], required: true },
   criadoEm: { type: Date, default: Date.now }
 });
 

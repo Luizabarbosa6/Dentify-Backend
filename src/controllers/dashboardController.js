@@ -1,4 +1,5 @@
 const Caso = require('../models/cases');
+const periciado = require('../models/periciado');
 
 exports.getDashboardResumo = async (req, res) => {
   try {
@@ -36,9 +37,45 @@ exports.getDashboardResumo = async (req, res) => {
       }
     ]);
 
+    const porSexo = await Caso.aggregate([
+      {
+        $group: {
+          _id: "$sexo",
+          total: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          status: "$_id",
+          total: 1,
+          _id: 0
+        }
+      }
+    ]);
+
+
+    const porEtnia = await periciado.aggregate([
+      {
+        $group: {
+          _id: "$etnia",
+          total: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          status: "$_id",
+          total: 1,
+          _id: 0
+        }
+      }
+    ]);
+
+
     res.status(200).json({
       porStatus,
-      porTipo
+      porTipo,
+      porSexo,
+      porEtnia
     });
   } catch (error) {
     console.error(error);
