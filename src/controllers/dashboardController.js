@@ -3,7 +3,6 @@ const periciado = require('../models/periciado');
 
 exports.getDashboardResumo = async (req, res) => {
   try {
-    // 1. Agrupamento por Status
     const porStatus = await Caso.aggregate([
       {
         $group: {
@@ -18,9 +17,7 @@ exports.getDashboardResumo = async (req, res) => {
           _id: 0
         }
       }
-    ]);
-
-    // 2. Agrupamento por Tipo
+    ]);  
     const porTipo = await Caso.aggregate([
       {
         $group: {
@@ -36,7 +33,6 @@ exports.getDashboardResumo = async (req, res) => {
         }
       }
     ]);
-
     const porSexo = await Caso.aggregate([
       {
         $group: {
@@ -52,8 +48,6 @@ exports.getDashboardResumo = async (req, res) => {
         }
       }
     ]);
-
-
     const porEtnia = await periciado.aggregate([
       {
         $group: {
@@ -69,8 +63,6 @@ exports.getDashboardResumo = async (req, res) => {
         }
       }
     ]);
-
-
     res.status(200).json({
       porStatus,
       porTipo,
