@@ -97,7 +97,7 @@ if (etnia && etnia.toLowerCase() !== 'todos') {
 
     // Por Etnia (periciado)
     const porEtnia = await periciado.aggregate([
-      { $match: filtroPericiado },
+      { $match: filtroEtnia },
       {
         $group: {
           _id: "$etnia",
