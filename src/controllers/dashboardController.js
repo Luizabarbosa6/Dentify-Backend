@@ -32,12 +32,12 @@ exports.getDashboardResumo = async (req, res) => {
     
     // Filtros para 'periciado'
     let filtroPericiado = {};
-    if (sexo && sexo !== 'todos') {
-      filtroPericiado.sexo = sexo;
-    }
-    if (etnia && etnia !== 'todos') {
-      filtroPericiado.etnia = etnia;
-    }
+    if (sexo && sexo.toLowerCase() !== 'todos') {
+  filtroPericiado.sexo = new RegExp(`^${sexo}$`, 'i'); // case-insensitive
+}
+if (etnia && etnia.toLowerCase() !== 'todos') {
+  filtroPericiado.etnia = new RegExp(`^${etnia}$`, 'i'); // case-insensitive
+}
 
     // Agregações
 
