@@ -35,7 +35,8 @@ exports.getDashboardResumo = async (req, res) => {
     if (sexo && sexo.toLowerCase() !== 'todos') {
   filtroPericiado.sexo = new RegExp(`^${sexo}$`, 'i'); // case-insensitive
 }
-if (etnia && typeof etnia === 'string' && etnia.toLowerCase() !== 'todos') {
+
+if (etnia && etnia.toLowerCase() !== 'todos' && etnia.trim() !== '') {
   filtroPericiado.etnia = new RegExp(`^${etnia.trim()}$`, 'i');
 } else {
   delete filtroPericiado.etnia; // garante que não tenha filtro residual
@@ -101,7 +102,7 @@ console.log('Filtro periciado:', filtroPericiado);
 
     // Por Etnia (periciado)
     const porEtnia = await periciado.aggregate([
-      { $match: filtroEtnia },
+      { $match: filtroPericiado },
       {
         $group: {
           _id: "$etnia",
