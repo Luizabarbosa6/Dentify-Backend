@@ -133,4 +133,25 @@ router.get('/', authGuard, controller.getPericiado);
  */
 router.get('/:id', authGuard, controller.getPericiadoById);
 
+/**
+ * @swagger
+ * /api/periciado/por-case/{caseId}:
+ *   get:
+ *     summary: Lista periciados por ID do caso (caseId)
+ *     tags: [Periciados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: caseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de periciados retornada com sucesso
+ */
+router.get('/por-caso/:caseId', authGuard, controller.getPericiadosByCaseId);
+
+
 module.exports = router;

@@ -13,6 +13,17 @@ exports.createPericiado = async (req, res) => {
   }
 };
 
+exports.getPericiadosByCaseId = async (req, res) => {
+  try {
+    const { caseId } = req.params;
+    const periciados = await Periciado.find({ caso: caseId });
+    res.status(200).json(periciados);
+  } catch (error) {
+    console.error('Erro ao buscar periciados por caseId:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+};
+
 exports.getPericiado = async (req, res) => {
   try {
     const pessoas = await Periciado.find();

@@ -3,7 +3,47 @@ const periciado = require('../models/periciado');
 
 exports.getDashboardResumo = async (req, res) => {
   try {
+    const { periodo, sexo, etnia } = req.query;
+
+    // Filtros para 'Caso'
+    let filtroCaso = {};
+
+    if (periodo && periodo !== 'todos') {
+  const agora = new Date();
+  let dataInicial;
+
+  if (periodo === 'semana') {
+    dataInicial = new Date(agora);
+    dataInicial.setDate(agora.getDate() - 7);
+  } else if (periodo === 'mes') {
+    dataInicial = new Date(agora);
+    dataInicial.setMonth(agora.getMonth() - 1);
+  } else if (periodo === 'ano') {
+    dataInicial = new Date(agora);
+    dataInicial.setFullYear(agora.getFullYear() - 1);
+  }
+
+  filtroCaso.dataAbertura = { $gte: dataInicial };
+}
+
+
+    // Filtro por sexo para 'periciado'
+    // (não usado em Caso)
+    
+    // Filtros para 'periciado'
+    let filtroPericiado = {};
+    if (sexo && sexo !== 'todos') {
+      filtroPericiado.sexo = sexo;
+    }
+    if (etnia && etnia !== 'todos') {
+      filtroPericiado.etnia = etnia;
+    }
+
+    // Agregações
+
+    // Por Status (caso)
     const porStatus = await Caso.aggregate([
+      { $match: filtroCaso },
       {
         $group: {
           _id: "$status",
@@ -17,8 +57,11 @@ exports.getDashboardResumo = async (req, res) => {
           _id: 0
         }
       }
-    ]);  
+    ]);
+
+    // Por Tipo (caso)
     const porTipo = await Caso.aggregate([
+      { $match: filtroCaso },
       {
         $group: {
           _id: "$tipo",
@@ -33,7 +76,10 @@ exports.getDashboardResumo = async (req, res) => {
         }
       }
     ]);
-    const porSexo = await Caso.aggregate([
+
+    // Por Sexo (periciado) - aqui foi corrigido para vir de periciado
+    const porSexo = await periciado.aggregate([
+      { $match: filtroPericiado },
       {
         $group: {
           _id: "$sexo",
@@ -42,13 +88,16 @@ exports.getDashboardResumo = async (req, res) => {
       },
       {
         $project: {
-          status: "$_id",
+          sexo: "$_id",
           total: 1,
           _id: 0
         }
       }
     ]);
+
+    // Por Etnia (periciado)
     const porEtnia = await periciado.aggregate([
+      { $match: filtroPericiado },
       {
         $group: {
           _id: "$etnia",
@@ -57,20 +106,21 @@ exports.getDashboardResumo = async (req, res) => {
       },
       {
         $project: {
-          status: "$_id",
+          etnia: "$_id",
           total: 1,
           _id: 0
         }
       }
     ]);
-    res.status(200).json({
+
+    return res.status(200).json({
       porStatus,
       porTipo,
       porSexo,
-      porEtnia
+      porEtnia,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erro ao gerar dados do dashboard' });
+    return res.status(500).json({ error: 'Erro ao gerar dados do dashboard' });
   }
 };
