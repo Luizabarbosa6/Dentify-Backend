@@ -1,6 +1,9 @@
 const path = require('path');
+const { gerarTextoRelatorio } = require('../utils/gemini');
 const { signPDFFile } = require('../utils/pdfSigner');
-Laudo = require('../models/laudos');
+const Evidence = require('../models/evidence');
+const Laudo = require('../models/laudos');
+
 const { gerarPDF } = require('../utils/pdfGenerator');
 
 
@@ -64,18 +67,43 @@ exports.exportToPDF = async (req, res) => {
 
 exports.createLaudo = async (req, res) => {
   try {
-    const { titulo, texto, peritoResponsavel } = req.body;
-    
-    // Validação básica dos campos obrigatórios
-    if (!titulo || !texto || !peritoResponsavel) {
-      return res.status(400).json({ message: 'Faltam campos obrigatórios (titulo, texto, peritoResponsavel)' });
+    const { titulo, evidence: evidenceId, peritoResponsavel } = req.body;
+
+    const evidencia = await Evidence.findById(evidenceId).populate('caso');
+
+    if (!evidencia) {
+      return res.status(404).json({ message: 'Evidência não encontrada' });
     }
 
-    const novoLaudo = new Laudo(req.body);
+    const prompt = `
+Você é um perito odontolegal. Abaixo estão os dados de uma evidência coletada. Gere um laudo técnico descritivo com base nessas informações:
+
+🔍 Evidência:
+- Tipo: ${evidencia.tipo}
+- Título: ${evidencia.titulo || 'Sem título'}
+- Descrição: ${evidencia.descricao || 'Sem descrição'}
+- Local de coleta: ${evidencia.localColeta || 'Não informado'}
+- Data de coleta: ${evidencia.dataColeta ? evidencia.dataColeta.toLocaleDateString() : 'Não informada'}
+- Coletado por: ${evidencia.coletadoPor || 'Não informado'}
+
+Evite uso de símbolos de formatação como asteriscos ou hashtags. Use linguagem técnica, formal e clara.
+O laudo deve descrever tecnicamente a evidência, contextualizar sua importância para o caso e apresentar uma conclusão pericial.
+`;
+
+    const texto = await gerarTextoRelatorio(prompt);
+
+    const novoLaudo = new Laudo({
+      titulo,
+      texto,
+      evidence: evidenceId,
+      peritoResponsavel,
+    });
+
     await novoLaudo.save();
+
     res.status(201).json(novoLaudo);
+
   } catch (error) {
-    console.error('Erro ao criar laudo:', error);
     res.status(500).json({ message: 'Erro ao criar laudo', erro: error.message });
   }
 };
