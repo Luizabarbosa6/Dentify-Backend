@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Luizabarbosa6/Dentify-Backend#readme",
   "dependencies": {
+    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",

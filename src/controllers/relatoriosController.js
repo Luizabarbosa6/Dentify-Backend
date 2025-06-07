@@ -1,21 +1,73 @@
 const Relatorio = require('../models/relatorios');
 const Case = require('../models/cases');
+const { gerarTextoRelatorio } = require('../utils/gemini');
+const Evidence = require('../models/evidence');
+const Laudo = require('../models/laudos');
+const Periciado = require('../models/periciado');
 const { signPDFFile } = require('../utils/pdfSigner');
 const { gerarPDF } = require('../utils/pdfRelatorioGenerator');
 
 exports.createRelatorio = async (req, res) => {
   try {
-    const novoRelatorio = new Relatorio(req.body);
-   
-    const caso = await Case.findById(req.body.caso);
+    const { caso: casoId, titulo, peritoResponsavel } = req.body;
+
+    const caso = await Case.findById(casoId);
+    const evidencias = await Evidence.find({ caso: casoId });
+    const laudos = await Laudo.find().populate('evidence');
+    const periciado = await Periciado.findOne({ caso: casoId });
+
     if (!caso) {
       return res.status(404).json({ message: 'Caso não encontrado' });
     }
+
+    // Montar o prompt para o Gemini
+    const prompt = `
+Você é um perito odontolegal. Com base nas informações abaixo, gere um relatório técnico formal:
+
+📝 Detalhes do caso:
+- Título: ${caso.titulo}
+- Descrição: ${caso.descricao}
+- Tipo: ${caso.tipo}
+- Responsável: ${caso.responsavel}
+- Status: ${caso.status}
+- Local: ${caso.local}
+
+👤 Periciado:
+${periciado ? `
+- Nome: ${periciado.nomeCompleto}
+- Sexo: ${periciado.sexo}
+- NIC: ${periciado.nic}
+- CPF: ${periciado.cpf}
+- Data de nascimento: ${periciado.dataNascimento.toLocaleDateString()}
+` : 'Nenhum periciado cadastrado.'}
+
+🔍 Evidências coletadas:
+${evidencias.map(ev => `- ${ev.tipo.toUpperCase()}: ${ev.titulo || 'Sem título'} (${ev.descricao})`).join('\n')}
+
+📑 Laudos:
+${laudos.map(laudo => `- ${laudo.titulo}: ${laudo.texto}`).join('\n')}
+
+Com base nas informações acima, gere um relatório técnico e objetivo com as seguintes seções:
+Evite uso de símbolos de formatação como asteriscos ou hashtags. Use linguagem técnica, formal e clara.
+`;
+
+    const conteudo = await gerarTextoRelatorio(prompt);
+
+    const novoRelatorio = new Relatorio({
+      titulo,
+      conteudo,
+      caso: casoId,
+      peritoResponsavel
+    });
+
     caso.status = 'Finalizado';
-    caso.dataFechamento = new Date(); // Atribui a data de fechamento ao caso
-    await caso.save(); // Salva a alteração do status e a data de fechamento
+    caso.dataFechamento = new Date();
+    await caso.save();
+
     await novoRelatorio.save();
+
     res.status(201).json(novoRelatorio);
+
   } catch (error) {
     res.status(500).json({ message: 'Erro ao criar relatório', erro: error.message });
   }

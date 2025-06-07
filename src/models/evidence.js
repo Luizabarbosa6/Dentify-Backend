@@ -6,7 +6,7 @@ const evidenceSchema = new mongoose.Schema({
   dataColeta: Date,
   coletadoPor: { type: String },
   responsavel: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
+  caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Caso' },
   localColeta: { type: String },
   imagemURL: {
     type: String,
