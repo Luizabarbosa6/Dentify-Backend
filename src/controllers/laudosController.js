@@ -1,9 +1,10 @@
 const path = require('path');
+const { gerarLegendaComBlip2 } = require('../utils/blip2Caption');
 const { gerarTextoRelatorio } = require('../utils/gemini');
 const { signPDFFile } = require('../utils/pdfSigner');
 const Evidence = require('../models/evidence');
 const Laudo = require('../models/laudos');
-
+const axios = require('axios');
 const { gerarPDF } = require('../utils/pdfGenerator');
 
 
@@ -65,32 +66,55 @@ exports.exportToPDF = async (req, res) => {
 };
 
 
+
 exports.createLaudo = async (req, res) => {
   try {
     const { titulo, evidence: evidenceId, peritoResponsavel } = req.body;
 
     const evidencia = await Evidence.findById(evidenceId).populate('caso');
 
-    if (!evidencia) {
-      return res.status(404).json({ message: 'Evidência não encontrada' });
+    if (!evidencia || !evidencia.imagemURL || !/^https?:\/\//.test(evidencia.imagemURL.trim())) {
+      return res.status(404).json({ message: 'Evidência ou imagem não encontrada ou inválida' });
+    }
+
+    // 🧠 Gerar legenda da imagem via BLIP-2 (Replicate)
+    let descricaoImagem = '';
+    try {
+      descricaoImagem = await gerarLegendaComBlip2(evidencia.imagemURL);
+    } catch (err) {
+      console.error("Erro ao gerar legenda com BLIP-2:", err);
+      return res.status(500).json({ message: 'Erro ao gerar legenda da imagem (BLIP-2)', erro: err.message });
     }
 
     const prompt = `
-Você é um perito odontolegal. Abaixo estão os dados de uma evidência coletada. Gere um laudo técnico descritivo com base nessas informações:
+Você é um perito odontolegal. Com base nas informações da evidência abaixo, elabore um laudo técnico odontolegal com linguagem formal, objetiva e tecnicamente estruturada.
 
-🔍 Evidência:
+Use a seguinte estrutura:
+
+1. Introdução: Explique a finalidade do laudo e um breve resumo da evidência.
+2. Descrição da Evidência: Descreva de forma clara e técnica a aparência da evidência, com base na descrição automática e nos metadados.
+3. Análise Odontolegal: Apresente uma análise objetiva, considerando a relevância odontolegal da evidência, possíveis limitações e implicações técnicas.
+4. Conclusão: Forneça uma conclusão clara sobre a utilidade odontolegal da evidência, sugerindo, se necessário, a coleta de mais informações.
+
+INSTRUÇÕES IMPORTANTES:
+- Não inclua campos como número do laudo, nome do perito, data de emissão ou qualquer identificação pessoal.
+- Não utilize formatações como negrito, itálico, sublinhado, emojis, asteriscos ou hashtags.
+- O texto gerado deve conter apenas o conteúdo técnico das quatro seções descritas.
+- Escreva em linguagem impessoal, formal e clara.
+- Evite frases genéricas ou vagas.
+- Mencione a ausência de informações apenas se isso comprometer a análise técnica.
+
+DADOS DA EVIDÊNCIA:
+- Descrição automática da imagem: ${descricaoImagem}
 - Tipo: ${evidencia.tipo}
 - Título: ${evidencia.titulo || 'Sem título'}
 - Descrição: ${evidencia.descricao || 'Sem descrição'}
 - Local de coleta: ${evidencia.localColeta || 'Não informado'}
 - Data de coleta: ${evidencia.dataColeta ? evidencia.dataColeta.toLocaleDateString() : 'Não informada'}
 - Coletado por: ${evidencia.coletadoPor || 'Não informado'}
-
-Evite uso de símbolos de formatação como asteriscos ou hashtags. Use linguagem técnica, formal e clara.
-O laudo deve descrever tecnicamente a evidência, contextualizar sua importância para o caso e apresentar uma conclusão pericial.
 `;
 
-    const texto = await gerarTextoRelatorio(prompt);
+    const texto = await gerarTextoRelatorio(prompt); // <-- continua usando Gemini aqui
 
     const novoLaudo = new Laudo({
       titulo,
@@ -102,11 +126,12 @@ O laudo deve descrever tecnicamente a evidência, contextualizar sua importânci
     await novoLaudo.save();
 
     res.status(201).json(novoLaudo);
-
   } catch (error) {
+    console.error('Erro ao criar laudo:', error);
     res.status(500).json({ message: 'Erro ao criar laudo', erro: error.message });
   }
 };
+
 
 
 exports.listarLaudos = async (req, res) => {
