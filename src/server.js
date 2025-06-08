@@ -16,9 +16,6 @@ const laudosRoutes = require('./routes/laudosRoutes');
 const relatoriosRouts = require ('./routes/relatoriosRouts');
 const dashboardRoutes = require('./routes/dashboardRoutes'); 
 const path = require('path');
-
-
-
 const app = express();
 app.use(helmet());
 const PORT = process.env.PORT || 3001;

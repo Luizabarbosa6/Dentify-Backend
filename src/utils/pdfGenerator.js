@@ -1,79 +1,102 @@
 const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const path = require('path'); // ✅ Importação do path
+const path = require('path');
+
+const colors = {
+  dentfyDarkBlue: '#0E1A26',
+  dentfyAmber: '#F59E0B',
+  dentfyTextPrimary: '#E5E7EB',
+  dentfyGray500: '#6B7280',
+  dentfyCyan: '#01777B',
+};
 
 exports.gerarPDF = (laudo) => {
   const doc = new PDFDocument({ margin: 50, size: 'A4' });
-  let buffers = [];
+  const buffers = [];
+
+  const logoPath = path.join(__dirname, 'logo-dentify-preta.png');
 
   doc.on('data', buffers.push.bind(buffers));
 
-  // Marca d'água (imagem grande e centralizada no fundo)
-  const watermarkPath = path.join(__dirname, 'logo-dentify-preta.png');
-  try {
-    const pageWidth = doc.page.width;
-    const pageHeight = doc.page.height;
+  // Marca d’água em todas as páginas
+  const applyWatermark = () => {
+    try {
+      doc.save();
+      doc.opacity(0.07);
+      const watermarkWidth = doc.page.width * 1.5;
+      const imgX = (doc.page.width - watermarkWidth) / 2;
+      const imgY = (doc.page.height - watermarkWidth) / 2;
+      doc.image(logoPath, imgX, imgY, { width: watermarkWidth });
+      doc.restore();
+    } catch (e) {
+      console.warn('⚠️ Marca d’água não aplicada:', e.message);
+    }
+  };
 
-    doc.opacity(0.07);
-    doc.image(watermarkPath, -150, 150, {
-      width: 900,
-      height: 900, // define altura forçada
-      opacity: 0.07
-    });
-    doc.opacity(1);
-  } catch (e) {
-    console.warn('⚠️ Marca d’água não aplicada:', e.message);
-  }
+  applyWatermark();
+  doc.on('pageAdded', applyWatermark);
 
-  // Cabeçalho institucional
-  doc.fontSize(12).font('Times-Bold')
+  // Header com logo + texto alinhado ao centro
+   doc.image(logoPath, 50, 37, { width: 70 });
+
+  // CABEÇALHO
+  doc.fontSize(12).font('Times-Bold').fillColor(colors.dentfyDarkBlue)
     .text('GOVERNO DO ESTADO DE PERNAMBUCO', { align: 'center' })
     .text('POLÍCIA TÉCNICO-CIENTÍFICA', { align: 'center' })
     .text('DEPARTAMENTO DE MEDICINA LEGAL', { align: 'center' })
     .text('Setor de Odontologia Legal', { align: 'center' });
 
-  doc.moveDown();
+  doc.moveDown(0.3);
+  doc.lineWidth(1).strokeColor(colors.dentfyCyan)
+    .moveTo(50, doc.y).lineTo(545, doc.y).stroke();
+  doc.moveDown(2);
+
 
   // Dados do laudo
-  doc.font('Times-Roman').fontSize(11)
-    .text(`REGISTRADO EM: ${new Date(laudo.createdAt).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    }).toUpperCase()}`)
-    .text(`Laudo nº ${laudo._id}`.toUpperCase());
+    doc.fontSize(10).font('Times-Roman').fillColor(colors.dentfyGray500)
+    .text(`REGISTRADO EM: ${laudo.createdAt}`, { align: 'justify' })
+    .text(`RELATÓRIO Nº ${laudo._id}`.toUpperCase(), { align: 'justify' });
 
-  doc.moveDown();
+  doc.moveDown(1.8);
+
 
   // Título do laudo
-  doc.fontSize(14).font('Times-Bold')
-    .text(laudo.titulo.toUpperCase(), { align: 'center', underline: true });
-
-  doc.moveDown();
-
-  // Corpo do texto
-  doc.fontSize(12).font('Times-Roman')
-    .text(laudo.texto, {
-      align: 'justify',
-      lineGap: 4
+  doc.fontSize(12).font('Times-Bold').fillColor(colors.dentfyAmber)
+    .text(laudo.titulo.toUpperCase(), {
+      align: 'center',
+      underline: true,
     });
 
-  doc.moveDown(3);
+  doc.moveDown(1.2);
 
-  // Assinatura
-  doc.font('Times-Roman')
-    .text('________________________________________', { align: 'left' })
-    .text(`${laudo.peritoResponsavel?.name || 'Nome do Perito'}`, { align: 'left' })
-    .text('Perito Odonto-Legal', { align: 'left' });
+
+  // Texto principal
+   doc.fontSize(11).font('Times-Roman').fillColor('black')
+    .text(laudo.texto, {
+      align: 'justify',
+      lineGap: 1,
+      paragraphGap: 2,
+    });
 
   doc.moveDown(2);
 
-  doc.font('Times-Italic')
-    .fontSize(10)
-    .fillColor('gray')
-    .text(`Este documento foi assinado digitalmente por ${laudo.peritoResponsavel?.name || 'Nome do Perito'} em ${new Date().toLocaleString()}`, {
-      align: 'left'
+  // Assinatura
+ doc.font('Times-Roman').fillColor(colors.dentfyCyan)
+    .text('________________________________________', {
+      align: 'center',
     });
+
+  doc.fillColor(colors.dentfyDarkBlue)
+    .text(`${laudo.peritoResponsavel?.name || 'Nome do Perito'}`, { align: 'center' })
+    .text('Perito Odonto-Legal', { align: 'center' });
+
+  doc.moveDown(1);
+
+  doc.font('Times-Italic').fontSize(10).fillColor(colors.dentfyGray500)
+    .text(`Este documento foi assinado digitalmente por ${laudo.peritoResponsavel?.name || 'Nome do Perito'} em ${new Date().toLocaleString()}`, {
+      align: 'center'
+    });
+
+
 
   doc.end();
 
@@ -82,7 +105,6 @@ exports.gerarPDF = (laudo) => {
       const buffer = Buffer.concat(buffers);
       resolve(buffer);
     });
-
     doc.on('error', (err) => {
       reject(err);
     });

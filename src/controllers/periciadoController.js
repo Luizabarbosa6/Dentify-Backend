@@ -1,4 +1,5 @@
 const Periciado = require('../models/periciado');
+
 exports.createPericiado = async (req, res) => {
   try {
     const novaPessoa = new Periciado(req.body);

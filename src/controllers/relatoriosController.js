@@ -22,9 +22,9 @@ exports.createRelatorio = async (req, res) => {
 
     // Montar o prompt para o Gemini
     const prompt = `
-Você é um perito odontolegal. Com base nas informações abaixo, gere um relatório técnico formal:
+Você é um perito odontolegal. Com base nas informações a seguir, elabore um relatório técnico com linguagem formal, objetiva e tecnicamente estruturada.
 
-📝 Detalhes do caso:
+Informações do caso:
 - Título: ${caso.titulo}
 - Descrição: ${caso.descricao}
 - Tipo: ${caso.tipo}
@@ -32,24 +32,41 @@ Você é um perito odontolegal. Com base nas informações abaixo, gere um relat
 - Status: ${caso.status}
 - Local: ${caso.local}
 
-👤 Periciado:
+Dados do periciado:
 ${periciado ? `
 - Nome: ${periciado.nomeCompleto}
 - Sexo: ${periciado.sexo}
 - NIC: ${periciado.nic}
 - CPF: ${periciado.cpf}
 - Data de nascimento: ${periciado.dataNascimento.toLocaleDateString()}
+${periciado.odontograma && periciado.odontograma.length > 0
+  ? `- Odontograma:\n${periciado.odontograma.map((dente, i) => `  • Dente ${dente.numero}: ${dente.descricao}`).join('\n')}`
+  : '- Odontograma: Não informado'}
 ` : 'Nenhum periciado cadastrado.'}
 
-🔍 Evidências coletadas:
+
+Evidências coletadas:
 ${evidencias.map(ev => `- ${ev.tipo.toUpperCase()}: ${ev.titulo || 'Sem título'} (${ev.descricao})`).join('\n')}
 
-📑 Laudos:
+Laudos relacionados:
 ${laudos.map(laudo => `- ${laudo.titulo}: ${laudo.texto}`).join('\n')}
 
-Com base nas informações acima, gere um relatório técnico e objetivo com as seguintes seções:
-Evite uso de símbolos de formatação como asteriscos ou hashtags. Use linguagem técnica, formal e clara.
+Elabore o relatório técnico com base nas informações acima, organizando o conteúdo nas seguintes seções:
+
+1. Resumo do Caso: apresente uma visão geral dos dados do caso.
+2. Identificação do Periciado: descreva os dados relevantes do indivíduo periciado (se disponíveis).
+3. Análise das Evidências: detalhe tecnicamente as evidências coletadas e sua relevância para o caso.
+4. Considerações com base nos laudos: relacione os laudos com as evidências e com o caso.
+5. Conclusão Técnica: apresente uma conclusão formal e objetiva sobre o andamento ou estado do caso com base nos dados disponíveis.
+
+INSTRUÇÕES IMPORTANTES:
+- A saída deve ser em texto puro, sem qualquer formatação Markdown.
+- Não use asteriscos (*), hashtags (#), negrito, itálico ou emojis.
+- Utilize apenas texto corrido, com títulos em caixa alta ou numerados.
+- Não insira marcações visuais de destaque, apenas estrutura técnica e formal.
+- Caso alguma informação esteja ausente e isso comprometa a análise, registre essa ausência de forma técnica e objetiva.
 `;
+
 
     const conteudo = await gerarTextoRelatorio(prompt);
 
