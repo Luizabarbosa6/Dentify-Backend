@@ -6,6 +6,8 @@ function gerarNicAleatorio() {
 const periciadoSchema = new mongoose.Schema({
   nomeCompleto: { type: String, required: true },
   endereco: { type: String },
+  latitude: Number,
+  longitude: Number,
   caso: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
   dataNascimento: { type: Date, required: true },
   sexo: { type: String, enum: ['Masculino', 'Feminino', 'Outro'], required: true },

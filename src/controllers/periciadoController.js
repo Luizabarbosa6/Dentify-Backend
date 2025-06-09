@@ -1,8 +1,21 @@
 const Periciado = require('../models/periciado');
+const getCoordinates = require('../utils/getCoordinates');
+
 
 exports.createPericiado = async (req, res) => {
   try {
-    const novaPessoa = new Periciado(req.body);
+    const data = req.body;
+
+    // Supondo que o campo seja 'endereco'
+    if (data.endereco) {
+      const coords = await getCoordinates(data.endereco);
+      if (coords) {
+        data.latitude = coords.latitude;
+        data.longitude = coords.longitude;
+      }
+    }
+
+    const novaPessoa = new Periciado(data);
     await novaPessoa.save();
     res.status(201).json(novaPessoa);
   } catch (err) {
@@ -48,13 +61,24 @@ exports.updatePericiado = async (req, res) => {
   try {
     const { id } = req.params;
     const dadosAtualizados = req.body;
+
+    if (dadosAtualizados.endereco) {
+      const coords = await getCoordinates(dadosAtualizados.endereco);
+      if (coords) {
+        dadosAtualizados.latitude = coords.latitude;
+        dadosAtualizados.longitude = coords.longitude;
+      }
+    }
+
     const pessoaAtualizada = await Periciado.findByIdAndUpdate(id, dadosAtualizados, {
-      new: true, // Retorna o documento atualizado
-      runValidators: true // Valida com base no schema
+      new: true,
+      runValidators: true
     });
+
     if (!pessoaAtualizada) {
       return res.status(404).json({ error: 'Periciado não encontrado' });
     }
+
     res.json(pessoaAtualizada);
   } catch (err) {
     res.status(400).json({ error: 'Erro ao atualizar periciado', detalhes: err });

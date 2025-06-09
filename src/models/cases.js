@@ -10,6 +10,8 @@ const casoSchema = new mongoose.Schema({
     dataFechamento: Date,
     sexo: { type: String, enum: ['Masculino', 'Feminino', 'Outro'], required: true },
     local: String,
+    latitude: Number,
+    longitude: Number,
   });
 
 module.exports = mongoose.model('Caso', casoSchema)
