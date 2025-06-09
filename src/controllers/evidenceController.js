@@ -1,4 +1,5 @@
 const Evidence = require('../models/evidence');
+const getCoordinates = require('../utils/getCoordinates');
 
 exports.uploadEvidence = async (req, res) => {
   try {
@@ -6,21 +7,35 @@ exports.uploadEvidence = async (req, res) => {
 
     let imagemURL = null;
     if (req.file && req.file.path) {
-      imagemURL = req.file.path; 
+      imagemURL = req.file.path;
     }
 
-    const responsavel = req.user.id; // Pega o ID do usuário logado
+    const responsavel = req.user.id;
+
+    // 🔍 Pega coordenadas se localColeta foi preenchido
+    let latitude = null;
+    let longitude = null;
+
+    if (localColeta) {
+      const coordinates = await getCoordinates(localColeta);
+      if (coordinates) {
+        latitude = coordinates.latitude;
+        longitude = coordinates.longitude;
+      }
+    }
 
     const evid = new Evidence({
       tipo,
       dataColeta,
-      coletadoPor, // o nome digitado
+      coletadoPor,
       caso,
       localColeta,
       descricao,
       titulo,
       imagemURL,
-      responsavel, // novo campo automático
+      responsavel,
+      latitude,
+      longitude,
     });
 
     await evid.save();
@@ -29,6 +44,7 @@ exports.uploadEvidence = async (req, res) => {
     res.status(500).json({ message: 'Erro ao criar evidência', error: error.message });
   }
 };
+
 
 exports.getEvidenceByCase = async (req, res) => {
   try {
@@ -58,25 +74,38 @@ const upload = multer({ storage: storage });
 
 exports.updateEvidence = async (req, res) => {
   try {
-    const {  tipo, dataColeta, coletadoPor, caso, localColeta, descricao, titulo } = req.body;
+    const { tipo, dataColeta, coletadoPor, caso, localColeta, descricao, titulo } = req.body;
 
     let imagemURL;
     if (req.file && req.file.path) {
       imagemURL = req.file.path;
     }
 
-    const responsavel = req.user.id; // Atualiza também quem editou, se quiser
+    const responsavel = req.user.id;
+
+    // 🔍 Buscar coordenadas se localColeta foi enviado
+    let latitude = null;
+    let longitude = null;
+
+    if (localColeta) {
+      const coordinates = await getCoordinates(localColeta);
+      if (coordinates) {
+        latitude = coordinates.latitude;
+        longitude = coordinates.longitude;
+      }
+    }
 
     const updateData = {
       tipo,
       dataColeta,
-      coletadoPor, // o nome digitado
+      coletadoPor,
       caso,
       localColeta,
       descricao,
       titulo,
-      imagemURL,
       responsavel,
+      latitude,
+      longitude,
     };
 
     if (imagemURL) {
@@ -94,7 +123,6 @@ exports.updateEvidence = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar evidência', error: error.message });
   }
 };
-
 
 exports.deleteEvidence = async (req, res) => {
   try {
