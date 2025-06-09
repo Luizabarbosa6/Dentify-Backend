@@ -39,15 +39,24 @@ exports.listCases = async (req, res) => {
 
 exports.getCaseDetail = async (req, res) => {
   try {
-    res.status(500).json({ message: 'Erro ao buscar detalhes do caso', erro: error.message });
+    const caso = await Case.findById(req.params.id); // Busca simples, sem populate
+
     if (!caso) {
       return res.status(404).json({ message: 'Caso não encontrado' });
     }
-    res.status(200).json({ message: 'Detalhes do caso encontrados', caso });
+
+    res.status(200).json({
+      message: 'Detalhes do caso encontrados',
+      caso,
+    });
   } catch (error) {
-     res.status(500).json({ message: 'Erro ao buscar detalhes do caso', erro: error.message });
+    res.status(500).json({
+      message: 'Erro ao buscar detalhes do caso',
+      erro: error.message,
+    });
   }
 };
+
 
 exports.updateCase = async (req, res) => {
   try {
