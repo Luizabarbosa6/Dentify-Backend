@@ -1,12 +1,39 @@
 const Case = require('../models/cases');
+const getCoordinates = require('../utils/getCoordinates');
 
 exports.createCase = async (req, res) => {
   try {
-    const novoCaso = new Case(req.body);
+    const { local } = req.body;
+
+    let latitude = null;
+    let longitude = null;
+
+    if (local) {
+      const coords = await getCoordinates(local);
+      if (coords) {
+        latitude = coords.latitude;
+        longitude = coords.longitude;
+      }
+    }
+
+    const novoCaso = new Case({
+      ...req.body,
+      latitude,
+      longitude
+    });
+
     await novoCaso.save();
-    res.status(201).json({ message: 'Caso criado com sucesso', caso: novoCaso });
+
+    res.status(201).json({
+      message: 'Caso criado com sucesso',
+      caso: novoCaso
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar caso', erro: error.message });
+    console.error(error);
+    res.status(500).json({
+      message: 'Erro ao criar caso',
+      erro: error.message
+    });
   }
 };
 
@@ -57,18 +84,28 @@ exports.getCaseDetail = async (req, res) => {
   }
 };
 
-
 exports.updateCase = async (req, res) => {
   try {
     const { id } = req.params;
     const dadosAtualizados = req.body;
+
+    if (dadosAtualizados.local) {
+      const coords = await getCoordinates(dadosAtualizados.local);
+      if (coords) {
+        dadosAtualizados.latitude = coords.latitude;
+        dadosAtualizados.longitude = coords.longitude;
+      }
+    }
+
     const casoAtualizado = await Case.findByIdAndUpdate(id, dadosAtualizados, {
       new: true,
       runValidators: true
     });
+
     if (!casoAtualizado) {
       return res.status(404).json({ message: 'Caso não encontrado' });
     }
+
     res.json(casoAtualizado);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar o caso', erro: error.message });

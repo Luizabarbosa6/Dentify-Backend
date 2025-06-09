@@ -11,8 +11,6 @@ exports.uploadEvidence = async (req, res) => {
     }
 
     const responsavel = req.user.id;
-
-    // 🔍 Pega coordenadas se localColeta foi preenchido
     let latitude = null;
     let longitude = null;
 
