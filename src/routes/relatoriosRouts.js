@@ -162,5 +162,35 @@ router.get('/:id/pdf', authGuard, roleGuard('perito'), controller.exportToPDF);
  */
 router.post('/:id/assinar', authGuard, roleGuard('perito'), controller.assinarRelatorio);
 
+/**
+ * @swagger
+ * /api/relatorio/{id}:
+ *   put:
+ *     summary: Atualizar um relatório existente
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *               conteudo:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Relatório atualizado com sucesso
+ */
+router.get('/:id', authGuard, roleGuard('perito'), controller.getRelatorioById);
 
 module.exports = router;

@@ -196,3 +196,17 @@ exports.deleteRelatorio = async (req, res) => {
   }
 };
 
+// Controller
+exports.getRelatorioById = async (req, res) => {
+  try {
+    const relatorio = await Relatorio.findById(req.params.id)
+      .populate('caso')
+      .populate('peritoResponsavel');
+    if (!relatorio) {
+      return res.status(404).json({ message: 'Relatório não encontrado' });
+    }
+    res.json(relatorio);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar relatório', error: error.message });
+  }
+};
