@@ -174,6 +174,31 @@ router.get('/', authGuard, laudosController.listarLaudos);
  */
 router.post('/:id/assinar', authGuard, roleGuard('perito'), laudosController.assinarLaudo);
 
+/**
+ * @swagger
+ * /api/laudos/{id}:
+ *   get:
+ *     summary: Obtém um laudo pelo ID
+ *     tags: [Laudos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do laudo
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Laudo encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Laudo'
+ *       404:
+ *         description: Laudo não encontrado
+ */
+router.get('/:id', authGuard, laudosController.getLaudoById);
 
 module.exports = router;
-

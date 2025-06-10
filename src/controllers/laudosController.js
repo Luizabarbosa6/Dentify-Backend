@@ -193,3 +193,15 @@ exports.deleteLaudo = async (req, res) => {
     res.status(500).json({ message: 'Erro ao deletar laudo', erro: error.message });
   }
 };
+
+exports.getLaudoById = async (req, res) => {
+  try {
+    const laudo = await Laudo.findById(req.params.id).populate('evidence').populate('peritoResponsavel');
+    if (!laudo) {
+      return res.status(404).json({ message: 'Laudo não encontrado' });
+    }
+    res.json(laudo);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar laudo', error: error.message });
+  }
+};
