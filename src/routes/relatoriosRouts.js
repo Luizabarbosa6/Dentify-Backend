@@ -193,4 +193,24 @@ router.post('/:id/assinar', authGuard, roleGuard('perito'), controller.assinarRe
  */
 router.get('/:id', authGuard, roleGuard('perito'), controller.getRelatorioById);
 
+/**
+ * @swagger
+ * /api/relatorio/por-caso/{casoId}:
+ *   get:
+ *     summary: Buscar relatórios por ID do caso
+ *     tags: [Relatórios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: casoId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de relatórios relacionados ao caso
+ */
+router.get('/por-caso/:casoId', authGuard, roleGuard('perito'), controller.getRelatoriosPorCaso);
+
 module.exports = router;
