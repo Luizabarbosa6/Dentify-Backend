@@ -210,3 +210,21 @@ exports.getRelatorioById = async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar relatório', error: error.message });
   }
 };
+
+exports.getRelatoriosPorCaso = async (req, res) => {
+  try {
+    const { casoId } = req.params;
+
+    const relatorios = await Relatorio.find({ caso: casoId })
+      .populate('caso')
+      .populate('peritoResponsavel');
+
+    if (!relatorios || relatorios.length === 0) {
+      return res.status(404).json({ message: 'Nenhum relatório encontrado para este caso' });
+    }
+
+    res.json(relatorios);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar relatórios por caso', erro: error.message });
+  }
+};
