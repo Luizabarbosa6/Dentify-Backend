@@ -97,3 +97,26 @@ exports.deletePericiado = async (req, res) => {
     res.status(500).json({ error: 'Erro ao deletar periciado', detalhes: err });
   }
 };
+
+exports.updateOdontograma = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { odontograma } = req.body;
+
+    if (!odontograma || !Array.isArray(odontograma)) {
+      return res.status(400).json({ error: 'Formato inválido para odontograma' });
+    }
+
+    const periciado = await Periciado.findById(id);
+    if (!periciado) {
+      return res.status(404).json({ error: 'Periciado não encontrado' });
+    }
+
+    periciado.odontograma = odontograma;
+    await periciado.save();
+
+    res.status(200).json({ message: 'Odontograma atualizado com sucesso', periciado });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar odontograma', detalhes: error.message });
+  }
+};
