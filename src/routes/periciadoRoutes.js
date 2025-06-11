@@ -190,4 +190,25 @@ router.get('/por-caso/:caseId', authGuard, controller.getPericiadosByCaseId);
  */
 router.patch('/:id/odontograma', authGuard, roleGuard('perito'), controller.updateOdontograma);
 
+/**
+ * @swagger
+ * /api/periciado/{id}/odontograma:
+ *   get:
+ *     summary: Obtém o odontograma de um periciado
+ *     tags: [Periciados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do periciado
+ *     responses:
+ *       200:
+ *         description: Odontograma retornado com sucesso
+ */
+router.get('/:id/odontograma', authGuard, controller.getOdontograma);
+
 module.exports = router;
