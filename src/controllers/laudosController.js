@@ -205,3 +205,21 @@ exports.getLaudoById = async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar laudo', error: error.message });
   }
 };
+
+exports.getLaudosPorEvidence = async (req, res) => {
+  try {
+    const { evidenceId } = req.params;
+
+    const laudos = await Laudo.find({ evidence: evidenceId })
+      .populate('evidence')
+      .populate('peritoResponsavel', 'name');
+
+    if (laudos.length === 0) {
+      return res.status(404).json({ message: 'Nenhum laudo encontrado para esta evidência' });
+    }
+
+    res.status(200).json({ message: 'Laudos encontrados', laudos });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar laudos por evidência', error: error.message });
+  }
+};

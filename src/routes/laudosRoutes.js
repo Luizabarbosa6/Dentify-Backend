@@ -201,4 +201,27 @@ router.post('/:id/assinar', authGuard, roleGuard('perito'), laudosController.ass
  */
 router.get('/:id', authGuard, laudosController.getLaudoById);
 
+/**
+ * @swagger
+ * /api/laudos/por-evidencia/{evidenceId}:
+ *   get:
+ *     summary: Lista laudos relacionados a uma evidência
+ *     tags: [Laudos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: evidenceId
+ *         required: true
+ *         description: ID da evidência
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de laudos retornada com sucesso
+ *       404:
+ *         description: Nenhum laudo encontrado para esta evidência
+ */
+router.get('/por-evidencia/:evidenceId', authGuard, laudosController.getLaudosPorEvidence);
+
 module.exports = router;
