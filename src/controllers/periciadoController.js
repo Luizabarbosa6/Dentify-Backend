@@ -120,3 +120,18 @@ exports.updateOdontograma = async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar odontograma', detalhes: error.message });
   }
 };
+
+exports.getOdontograma = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const periciado = await Periciado.findById(id);
+
+    if (!periciado) {
+      return res.status(404).json({ error: 'Periciado não encontrado' });
+    }
+
+    res.status(200).json(periciado.odontograma || []);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar odontograma', detalhes: error.message });
+  }
+};
